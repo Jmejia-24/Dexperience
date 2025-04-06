@@ -11,7 +11,7 @@ final class App {
 
     // MARK: - Properties
 
-    var navigationController: UINavigationController = .init()
+    var navigationController: AppNavigationController = .init()
     var primaryViewController: UIViewController { .init() }
 }
 
@@ -29,6 +29,10 @@ extension App: Coordinator {
 extension App: AppRouter {
 
     func process(route: AppTransition) {
+        let coordinator = route.coordinatorFor(router: self)
+
+        coordinator.start()
+
 #if DEBUG
 
         let routeInfo = """
