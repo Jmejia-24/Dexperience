@@ -57,7 +57,7 @@ final class TabBarViewController<R: TabBarRouter>: UITabBarController {
 private extension TabBarViewController {
 
     func setupUI() {
-        tabBar.tintColor = .black
+        tabBar.tintColor = .label
     }
 
     func applyTabBarCustomBackground() {
