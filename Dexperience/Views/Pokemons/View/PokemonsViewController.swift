@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class PokemonsViewController<R: PokemonsRouter>: UICollectionViewController, UISearchResultsUpdating {
+final class PokemonsViewController<R: PokemonsRouter>: UICollectionViewController, UISearchResultsUpdating, UICollectionViewDataSourcePrefetching {
 
     private enum Section: CaseIterable {
         case main
@@ -79,6 +79,22 @@ final class PokemonsViewController<R: PokemonsRouter>: UICollectionViewControlle
 
         applySnapshot(pokemons: filteredResults)
     }
+
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        let count = viewModel.pokemonList.count
+
+        if indexPaths.contains(where: { $0.item >= count - 10 }) {
+            Task {
+                do {
+                    try await viewModel.fetchMorePokemon()
+
+                    applySnapshot(pokemons: viewModel.pokemonList)
+                } catch {
+                    print("Error al cargar más datos: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
 }
 
 // MARK: - Private methods
@@ -94,6 +110,7 @@ private extension PokemonsViewController {
     func setupUI() {
         title = "Pokemon"
 
+        collectionView.prefetchDataSource = self
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
     }

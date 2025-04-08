@@ -14,6 +14,7 @@ final class PokemonsViewModel<R: PokemonsRouter> {
     private let router: R
     private let api: PokemonsRepository
     private var pokemonListResponse: PokemonListResponse?
+    private var isFetchingMore = false
 
     var pokemonList: [PokemonSummary] = []
 
@@ -26,10 +27,25 @@ final class PokemonsViewModel<R: PokemonsRouter> {
 
     @MainActor
     func getPokemonList() async throws {
-        let response = try await api.fetchPokemonList(offset: 0)
+        let response = try await api.fetchPokemonList(from: nil)
 
         pokemonListResponse = response
         pokemonList = response.results
+    }
+
+    @MainActor
+    func fetchMorePokemon() async throws {
+        guard !isFetchingMore,
+              let nextUrlString = pokemonListResponse?.next,
+              let nextUrl = URL(string: nextUrlString) else { return }
+
+        isFetchingMore = true
+
+        let response = try await api.fetchPokemonList(from: nextUrl)
+        pokemonListResponse = response
+
+        pokemonList.append(contentsOf: response.results)
+        isFetchingMore = false
     }
 
     func searchPokemon(with query: String?) -> [PokemonSummary] {

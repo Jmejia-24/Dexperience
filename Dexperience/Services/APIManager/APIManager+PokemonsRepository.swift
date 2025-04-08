@@ -9,15 +9,20 @@ import Foundation
 
 extension APIManager: PokemonsRepository {
 
-    func fetchPokemonList(offset: Int) async throws -> PokemonListResponse {
-        let request = Request(
-            endpoint: .pokemon,
-            queryParameters: [
-                .init(name: "limit", value: "50"),
-                .init(name: "offset", value: "\(offset)")
-            ],
-        )
-
+    func fetchPokemonList(from url: URL?) async throws -> PokemonListResponse {
+        var request: Request
+        
+        if let url {
+            request = Request(with: url)
+        } else {
+            request = Request(
+                endpoint: .pokemon,
+                queryParameters: [
+                    .init(name: "limit", value: "50")
+                ],
+            )
+        }
+        
         return try await execute(request)
     }
 

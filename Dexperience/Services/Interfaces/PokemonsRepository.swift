@@ -9,6 +9,6 @@ import Foundation
 
 protocol PokemonsRepository {
 
-    func fetchPokemonList(offset: Int) async throws -> PokemonListResponse
+    func fetchPokemonList(from url: URL?) async throws -> PokemonListResponse
     func fetchPokemon(url: URL) async throws -> Pokemon
 }
