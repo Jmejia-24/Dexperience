@@ -14,10 +14,7 @@ final class PokemonCellViewModel {
     private let api: PokemonsRepository
     private let pokemonURL: String?
 
-    private(set) var name: String = ""
-    private(set) var idText: String = ""
-    private(set) var imageUrl: URL?
-    private(set) var typeImages: [UIImage] = []
+    private(set) var pokemon: Pokemon?
 
     var onUpdate: (() -> Void)?
 
@@ -42,20 +39,7 @@ private extension PokemonCellViewModel {
               let url = URL(string: pokemonURL) else { return }
 
         do {
-            let pokemon = try await api.fetchPokemon(url: url)
-
-            name = pokemon.name?.capitalized ?? ""
-            idText = "#\(pokemon.id ?? 0)"
-
-            if let stringUrl = pokemon.sprites?.other?.officialArtwork?.frontDefault {
-                imageUrl = URL(string: stringUrl)
-            }
-
-            if let types = pokemon.types {
-                typeImages = types.compactMap { type in
-                    UIImage(named: "type_\(type.type?.name ?? "")")
-                }
-            }
+            pokemon = try await api.fetchPokemon(url: url)
 
             onUpdate?()
         } catch {

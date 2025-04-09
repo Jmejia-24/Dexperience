@@ -31,4 +31,10 @@ extension APIManager: PokemonsRepository {
 
         return try await execute(request)
     }
+
+    func pokemonType(url: URL) async throws -> TypeResponse {
+        let request = Request(with: url)
+
+        return try await execute(request)
+    }
 }

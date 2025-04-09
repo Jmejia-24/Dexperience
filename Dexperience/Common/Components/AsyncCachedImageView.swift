@@ -76,6 +76,7 @@ final class AsyncCachedImageView: UIImageView {
 private extension AsyncCachedImageView {
 
     func setup() {
+        image = placeholderImage
         contentMode = .scaleAspectFit
         clipsToBounds = true
         spinner.translatesAutoresizingMaskIntoConstraints = false

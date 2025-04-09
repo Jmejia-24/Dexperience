@@ -74,6 +74,24 @@ final class PokemonsViewController<R: PokemonsRouter>: UICollectionViewControlle
         print(pokemon)
     }
 
+    override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        guard let indexPath = indexPaths.first,
+              let pokemon = dataSource.itemIdentifier(for: indexPath),
+              let url = URL(string: pokemon.url ?? "") else {
+            return nil
+        }
+
+        return UIContextMenuConfiguration(
+            identifier: indexPath as NSCopying,
+            previewProvider: {
+                let pokemonPreviewViewModel = PokemonPreviewViewModel(pokemonURL: url)
+
+                return PokemonPreview(viewModel: pokemonPreviewViewModel)
+            },
+            actionProvider: nil
+        )
+    }
+
     func updateSearchResults(for searchController: UISearchController) {
         let filteredResults = viewModel.searchPokemon(with: searchController.searchBar.text)
 
