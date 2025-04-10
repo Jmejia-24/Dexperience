@@ -10,4 +10,5 @@ import Foundation
 enum Endpoint: String, CaseIterable, Hashable {
 
     case pokemon
+    case move
 }

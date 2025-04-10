@@ -1,5 +1,5 @@
 //
-//  PokemonsViewController.swift
+//  MovesViewController.swift
 //  Dexperience
 //
 //  Created by Byron on 4/5/25.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class PokemonsViewController<R: PokemonsRouter>: UICollectionViewController, UISearchResultsUpdating, UICollectionViewDataSourcePrefetching {
+final class MovesViewController<R: MovesRouter>: UICollectionViewController, UISearchResultsUpdating, UICollectionViewDataSourcePrefetching {
 
     private enum Section: CaseIterable {
         case main
@@ -15,20 +15,20 @@ final class PokemonsViewController<R: PokemonsRouter>: UICollectionViewControlle
 
     // MARK: - Properties
 
-    private let viewModel: PokemonsViewModel<R>
+    private let viewModel: MovesViewModel<R>
 
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, PokemonSummary>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, PokemonSummary>
 
-    private let registerPokemonCell = UICollectionView.CellRegistration<PokemonCellView, PokemonSummary> { cell, indexPath, pokemon in
-        let viewModel = PokemonCellViewModel(stringUrl: pokemon.url)
+    private let registerMoveCell = UICollectionView.CellRegistration<MoveCellView, PokemonSummary> { cell, indexPath, pokemon in
+        let viewModel = MoveCellViewModel(stringUrl: pokemon.url)
 
         cell.configure(with: viewModel)
     }
 
     private lazy var dataSource: DataSource = {
         let dataSource = DataSource(collectionView: collectionView) { collectionView, indexPath, item -> UICollectionViewCell in
-            let configType = self.registerPokemonCell
+            let configType = self.registerMoveCell
 
             return collectionView.dequeueConfiguredReusableCell(using: configType, for: indexPath, item: item)
         }
@@ -42,14 +42,13 @@ final class PokemonsViewController<R: PokemonsRouter>: UICollectionViewControlle
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search"
-        searchController.searchBar.tintColor = .label
 
         return searchController
     }()
-
+    
     // MARK: - Initializers
 
-    init(viewModel: PokemonsViewModel<R>) {
+    init(viewModel: MovesViewModel<R>) {
         self.viewModel = viewModel
 
         super.init(collectionViewLayout: Self.makeListLayout())
@@ -74,39 +73,21 @@ final class PokemonsViewController<R: PokemonsRouter>: UICollectionViewControlle
         print(pokemon)
     }
 
-    override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
-        guard let indexPath = indexPaths.first,
-              let pokemon = dataSource.itemIdentifier(for: indexPath),
-              let url = URL(string: pokemon.url ?? "") else {
-            return nil
-        }
-
-        return UIContextMenuConfiguration(
-            identifier: indexPath as NSCopying,
-            previewProvider: {
-                let pokemonPreviewViewModel = PokemonPreviewViewModel(pokemonURL: url)
-
-                return PokemonPreview(viewModel: pokemonPreviewViewModel)
-            },
-            actionProvider: nil
-        )
-    }
-
     func updateSearchResults(for searchController: UISearchController) {
-        let filteredResults = viewModel.searchPokemon(with: searchController.searchBar.text)
+        let filteredResults = viewModel.searchMove(with: searchController.searchBar.text)
 
-        applySnapshot(pokemons: filteredResults)
+        applySnapshot(moves: filteredResults)
     }
 
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        let count = viewModel.pokemonList.count
+        let count = viewModel.moveList.count
 
         if indexPaths.contains(where: { $0.item >= count - 10 }) {
             Task {
                 do {
-                    try await viewModel.fetchMorePokemon()
+                    try await viewModel.fetchMoreMoves()
 
-                    applySnapshot(pokemons: viewModel.pokemonList)
+                    applySnapshot(moves: viewModel.moveList)
                 } catch {
                     print(error.localizedDescription)
                 }
@@ -117,7 +98,7 @@ final class PokemonsViewController<R: PokemonsRouter>: UICollectionViewControlle
 
 // MARK: - Private methods
 
-private extension PokemonsViewController {
+private extension MovesViewController {
 
     static func makeListLayout() -> UICollectionViewCompositionalLayout {
         let listConfig = UICollectionLayoutListConfiguration(appearance: .plain)
@@ -126,7 +107,7 @@ private extension PokemonsViewController {
     }
 
     func setupUI() {
-        title = "Pokemon"
+        title = "Moves"
 
         collectionView.prefetchDataSource = self
         navigationItem.searchController = searchController
@@ -136,20 +117,20 @@ private extension PokemonsViewController {
     func fetchInitData() {
         Task {
             do {
-                try await viewModel.getPokemonList()
+                try await viewModel.getMoveList()
 
-                applySnapshot(pokemons: viewModel.pokemonList)
+                applySnapshot(moves: viewModel.moveList)
             } catch let error {
                 print(error.localizedDescription)
             }
         }
     }
 
-    func applySnapshot(pokemons: [PokemonSummary]) {
+    func applySnapshot(moves: [PokemonSummary]) {
         var snapshot = Snapshot()
 
         snapshot.appendSections(Section.allCases)
-        Section.allCases.forEach { snapshot.appendItems(pokemons, toSection: $0) }
+        Section.allCases.forEach { snapshot.appendItems(moves, toSection: $0) }
 
         dataSource.apply(snapshot)
     }

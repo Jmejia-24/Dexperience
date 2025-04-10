@@ -20,7 +20,9 @@ final class PokemonsCoordinator<R: AppRouter> {
 
     lazy var primaryViewController: UIViewController = {
         let viewController = PokemonsViewController(viewModel: homeViewModel)
+
         homeNavigationController = AppNavigationController(rootViewController: viewController)
+
         return viewController
     }()
 
