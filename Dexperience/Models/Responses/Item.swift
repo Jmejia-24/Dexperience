@@ -1,20 +1,22 @@
 //
-//  Move.swift
+//  Item.swift
 //  Dexperience
 //
 //  Created by Byron on 4/10/25.
 //
 
 
-struct Move: Codable, Hashable {
+struct Item: Codable {
 
     let id: Int?
     let name: String?
-    let type: PokemonSummary?
+    let cost: Int?
+    let sprites: Sprites
 
     enum CodingKeys: String, CodingKey {
         case id
         case name
-        case type
+        case cost
+        case sprites
     }
 }

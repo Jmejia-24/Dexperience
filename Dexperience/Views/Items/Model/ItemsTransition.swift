@@ -1,10 +1,10 @@
 //
-//  ItensTransition.swift
+//  ItemsTransition.swift
 //  Dexperience
 //
 //  Created by Byron on 4/5/25.
 //
 
-enum ItensTransition {
+enum ItemsTransition {
 
 }

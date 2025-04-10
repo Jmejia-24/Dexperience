@@ -11,4 +11,5 @@ enum Endpoint: String, CaseIterable, Hashable {
 
     case pokemon
     case move
+    case item
 }

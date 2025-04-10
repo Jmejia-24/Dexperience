@@ -14,12 +14,12 @@ final class MovesCoordinator<R: AppRouter> {
     private var router: R
     private var favoritesNavigationController: AppNavigationController!
 
-    private lazy var homeViewModel: MovesViewModel = {
+    private lazy var movesViewModel: MovesViewModel = {
         MovesViewModel(router: self)
     }()
 
     lazy var primaryViewController: UIViewController = {
-        let viewController = MovesViewController(viewModel: homeViewModel)
+        let viewController = MovesViewController(viewModel: movesViewModel)
 
         favoritesNavigationController = AppNavigationController(rootViewController: viewController)
 

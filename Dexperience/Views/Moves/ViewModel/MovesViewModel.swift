@@ -54,8 +54,8 @@ final class MovesViewModel<R: MovesRouter> {
             return moveList
         }
 
-        return moveList.filter { pokemon in
-            pokemon.name?.lowercased().contains(query) ?? false
+        return moveList.filter { move in
+            move.name?.lowercased().contains(query) ?? false
         }
     }
 }

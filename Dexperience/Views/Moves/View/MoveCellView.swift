@@ -70,7 +70,7 @@ private extension MoveCellView {
             typeImageView.widthAnchor.constraint(equalToConstant: 40),
             heightConstraint,
             typeImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-            nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            typeImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             typeImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
 
             nameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
@@ -82,7 +82,7 @@ private extension MoveCellView {
     }
 
     func updateUI(with viewModel: MoveCellViewModel) {
-        nameLabel.text = viewModel.move?.formattedName
+        nameLabel.text = viewModel.move?.name?.formatted
 
         if let typeImage = viewModel.type?.image {
             typeImageView.image = typeImage

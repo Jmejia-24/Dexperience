@@ -1,5 +1,5 @@
 //
-//  ItensCoordinator.swift
+//  ItemsCoordinator.swift
 //  Dexperience
 //
 //  Created by Byron on 4/5/25.
@@ -7,15 +7,20 @@
 
 import UIKit
 
-final class ItensCoordinator<R: AppRouter> {
+final class ItemsCoordinator<R: AppRouter> {
 
     // MARK: - Properties
 
     private var router: R
     private var settingsNavigationController: AppNavigationController!
 
+    private lazy var itemsViewModel: ItemsViewModel = {
+        ItemsViewModel(router: self)
+    }()
+
+
     lazy var primaryViewController: UIViewController = {
-        let viewController = ItensViewController()
+        let viewController = ItemsViewController(viewModel: itemsViewModel)
 
         settingsNavigationController = AppNavigationController(rootViewController: viewController)
 
@@ -31,7 +36,7 @@ final class ItensCoordinator<R: AppRouter> {
 
 // MARK: - Coordinator
 
-extension ItensCoordinator: Coordinator {
+extension ItemsCoordinator: Coordinator {
 
     func start() {
 
@@ -40,14 +45,14 @@ extension ItensCoordinator: Coordinator {
 
 // MARK: - Router
 
-extension ItensCoordinator: ItensRouter {
+extension ItemsCoordinator: ItemsRouter {
 
     var navigationController: AppNavigationController {
         get { settingsNavigationController }
         set { }
     }
 
-    func process(route: ItensTransition) {
+    func process(route: ItemsTransition) {
 
     }
 

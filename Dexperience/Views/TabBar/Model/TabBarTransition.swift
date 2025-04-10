@@ -11,7 +11,7 @@ enum TabBarTransition: Int, CaseIterable {
 
     case showPokemons
     case showMoves
-    case showItens
+    case showItems
 
     var identifier: String {
         String(describing: self)
@@ -23,8 +23,8 @@ enum TabBarTransition: Int, CaseIterable {
             UIImage(resource: .pokemonIcon)
         case .showMoves:
             UIImage(resource: .movesIcon)
-        case .showItens:
-            UIImage(resource: .itensIcon)
+        case .showItems:
+            UIImage(resource: .itemsIcon)
         }
     }
 
@@ -32,7 +32,7 @@ enum TabBarTransition: Int, CaseIterable {
         return switch self {
             case .showPokemons: PokemonsCoordinator(router: router)
             case .showMoves: MovesCoordinator(router: router)
-            case .showItens: ItensCoordinator(router: router)
+            case .showItems: ItemsCoordinator(router: router)
         }
     }
 }

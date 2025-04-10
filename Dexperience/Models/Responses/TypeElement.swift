@@ -6,6 +6,7 @@
 //
 
 struct TypeElement: Codable, Hashable {
+    
     let slot: Int?
     let type: PokemonSummary?
 
