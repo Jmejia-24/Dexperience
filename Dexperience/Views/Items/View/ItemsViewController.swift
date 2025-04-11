@@ -68,9 +68,9 @@ final class ItemsViewController<R: ItemsRouter>: UICollectionViewController, UIS
     }
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let pokemon = dataSource.itemIdentifier(for: indexPath) else { return }
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
 
-        print(pokemon)
+        viewModel.showDetail(item)
     }
 
     func updateSearchResults(for searchController: UISearchController) {

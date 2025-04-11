@@ -13,7 +13,7 @@ final class TabBarCoordinator<R: AppRouter> {
 
     private var coordinatorRegister: [TabBarTransition: Coordinator] = [:]
 
-    var navigationController: AppNavigationController {
+    var navigationController: AppNavigationController? {
         get { router.navigationController }
         set { router.navigationController = newValue }
     }
@@ -27,13 +27,14 @@ final class TabBarCoordinator<R: AppRouter> {
     lazy var primaryViewController: UIViewController = {
         let tabBarViewController: TabBarViewController = .init(viewModel: tabBarViewModel)
 
-        let navigationControllers = TabBarTransition.allCases.map { (transition: TabBarTransition) -> UINavigationController in
+        let navigationControllers = TabBarTransition.allCases.compactMap { (transition: TabBarTransition) -> UINavigationController in
             coordinatorRegister[transition] = transition.coordinatorFor(router: router)
             coordinatorRegister[transition]?.primaryViewController.tabBarItem.image = transition.image
 
-            guard let router = coordinatorRegister[transition] as? any Router else { fatalError() }
+            guard let router = coordinatorRegister[transition] as? any Router,
+                  let navigationController = router.navigationController else { fatalError() }
 
-            return router.navigationController
+            return navigationController
         }
 
         tabBarViewController.setViewControllers(navigationControllers, animated: true)
@@ -53,9 +54,9 @@ final class TabBarCoordinator<R: AppRouter> {
 extension TabBarCoordinator: Coordinator {
 
     func start() {
-        navigationController.setNavigationBarHidden(true, animated: false)
+        navigationController?.setNavigationBarHidden(true, animated: false)
 
-        navigationController.pushViewController(primaryViewController, animated: true)
+        navigationController?.pushViewController(primaryViewController, animated: true)
     }
 }
 
@@ -68,6 +69,6 @@ extension TabBarCoordinator: TabBarRouter {
     }
 
     func exit() {
-        navigationController.popViewController(animated: true)
+        navigationController?.popViewController(animated: true)
     }
 }

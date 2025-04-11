@@ -64,4 +64,9 @@ final class ItemsViewModel<R: ItemsRouter> {
 
 extension ItemsViewModel {
 
+    func showDetail(_ item: PokemonSummary) {
+        guard let stringUrl = item.url else { return }
+
+        router.process(route: .itemDetail(stringUrl))
+    }
 }

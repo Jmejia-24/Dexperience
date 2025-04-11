@@ -47,13 +47,28 @@ extension ItemsCoordinator: Coordinator {
 
 extension ItemsCoordinator: ItemsRouter {
 
-    var navigationController: AppNavigationController {
+    var navigationController: AppNavigationController? {
         get { settingsNavigationController }
         set { }
     }
 
     func process(route: ItemsTransition) {
+#if DEBUG
 
+        let routeInfo = """
+        🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍\n
+        🟢🚀 Processing Route 🟢🚀
+        🛣️ Route Identifier: \(route.identifier)
+        \n🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚\n
+        """
+
+        print(routeInfo)
+
+#endif
+
+        let coordinator = route.coordinatorFor(router: self)
+
+        coordinator.start()
     }
 
     func exit() {

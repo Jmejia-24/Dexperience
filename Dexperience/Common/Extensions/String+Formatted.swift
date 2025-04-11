@@ -12,4 +12,8 @@ extension String {
             .replacingOccurrences(of: "-", with: " ")
             .capitalized
     }
+
+    var cleaned: String {
+        self.replacingOccurrences(of: ":\\s*", with: "\n", options: .regularExpression)
+    }
 }

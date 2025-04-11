@@ -24,5 +24,18 @@ struct GradientProvider {
 
         return gradient
     }
-}
 
+    static func softGradient(baseColor: UIColor) -> CAGradientLayer {
+        let gradient = CAGradientLayer()
+
+        gradient.colors = [
+            baseColor.cgColor,
+            baseColor.withAlphaComponent(0.4).cgColor
+        ]
+
+        gradient.startPoint = CGPoint(x: 0, y: 0)
+        gradient.endPoint = CGPoint(x: 1, y: 1)
+
+        return gradient
+    }
+}

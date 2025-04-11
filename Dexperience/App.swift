@@ -11,7 +11,7 @@ final class App {
 
     // MARK: - Properties
 
-    var navigationController: AppNavigationController = .init()
+    var navigationController: AppNavigationController? = .init()
     var primaryViewController: UIViewController { .init() }
 }
 
@@ -48,6 +48,6 @@ extension App: AppRouter {
     }
 
     func exit() {
-        navigationController.popToRootViewController(animated: true)
+        navigationController?.popToRootViewController(animated: true)
     }
 }

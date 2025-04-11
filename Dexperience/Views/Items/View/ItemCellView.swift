@@ -130,6 +130,6 @@ private extension ItemCellView {
         nameLabel.text = viewModel.item?.name?.formatted
         costLabel.text = "\(viewModel.item?.cost ?? 0)"
 
-        itemImageView.loadImage(from: URL(string: viewModel.item?.sprites.spriteDefault ?? ""))
+        itemImageView.loadImage(from: URL(string: viewModel.item?.sprites?.spriteDefault ?? ""))
     }
 }

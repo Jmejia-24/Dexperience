@@ -12,16 +12,16 @@ final class PokemonsCoordinator<R: AppRouter> {
     // MARK: - Properties
 
     private var router: R
-    private var homeNavigationController: AppNavigationController!
+    private var pokemonsNavigationController: AppNavigationController!
 
-    private lazy var homeViewModel: PokemonsViewModel = {
+    private lazy var pokemonsViewModel: PokemonsViewModel = {
         PokemonsViewModel(router: self)
     }()
 
     lazy var primaryViewController: UIViewController = {
-        let viewController = PokemonsViewController(viewModel: homeViewModel)
+        let viewController = PokemonsViewController(viewModel: pokemonsViewModel)
 
-        homeNavigationController = AppNavigationController(rootViewController: viewController)
+        pokemonsNavigationController = AppNavigationController(rootViewController: viewController)
 
         return viewController
     }()
@@ -44,8 +44,8 @@ extension PokemonsCoordinator: Coordinator {
 
 extension PokemonsCoordinator: PokemonsRouter {
 
-    var navigationController: AppNavigationController {
-        get { homeNavigationController }
+    var navigationController: AppNavigationController? {
+        get { pokemonsNavigationController }
         set { }
     }
 
