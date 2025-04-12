@@ -5,7 +5,6 @@
 //  Created by Byron on 4/10/25.
 //
 
-
 struct Item: Codable {
 
     let id: Int?
@@ -20,14 +19,5 @@ struct Item: Codable {
         case cost
         case sprites
         case effectEntries = "effect_entries"
-    }
-}
-
-struct EffectEntry: Codable {
-
-    let effect: String?
-
-    enum CodingKeys: String, CodingKey {
-        case effect
     }
 }

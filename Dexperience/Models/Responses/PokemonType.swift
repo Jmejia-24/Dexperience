@@ -31,11 +31,15 @@ enum PokemonType: String, CaseIterable {
 
 extension PokemonType {
 
-    var imageName: String {
-        "type_\(self.rawValue)"
+    var image: UIImage {
+        UIImage(named: "type_\(self.rawValue)") ?? UIImage()
     }
 
-    var image: UIImage {
-        UIImage(named: imageName) ?? UIImage()
+    var tagImage: UIImage {
+        UIImage(named: "tag_\(self.rawValue)") ?? UIImage()
+    }
+
+    var color: UIColor {
+        UIColor(named: "color_\(self.rawValue)") ?? .tintColor
     }
 }

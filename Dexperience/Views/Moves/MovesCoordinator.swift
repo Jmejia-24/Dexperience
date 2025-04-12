@@ -51,7 +51,24 @@ extension MovesCoordinator: MovesRouter {
         set { }
     }
 
-    func process(route: MovesTransition) { }
+    func process(route: MovesTransition) {
+#if DEBUG
+
+        let routeInfo = """
+        🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍🔍\n
+        🟢🚀 Processing Route 🟢🚀
+        🛣️ Route Identifier: \(route.identifier)
+        \n🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚🔚\n
+        """
+
+        print(routeInfo)
+
+#endif
+
+        let coordinator = route.coordinatorFor(router: self)
+
+        coordinator.start()
+    }
 
     func exit() { }
 }

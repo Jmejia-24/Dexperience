@@ -56,7 +56,7 @@ final class ItemDetailHeaderView: UIView {
         return label
     }()
 
-    private lazy var textStackView: UIStackView = {
+    private lazy var costStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [costLabel, costImageView])
 
         stack.axis = .horizontal
@@ -68,7 +68,7 @@ final class ItemDetailHeaderView: UIView {
     }()
 
     private lazy var mainStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [nameLabel, textStackView])
+        let stack = UIStackView(arrangedSubviews: [nameLabel, costStackView])
 
         stack.axis = .vertical
         stack.alignment = .center

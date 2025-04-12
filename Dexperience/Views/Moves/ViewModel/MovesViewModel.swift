@@ -64,4 +64,9 @@ final class MovesViewModel<R: MovesRouter> {
 
 extension MovesViewModel {
 
+    func showDetail(_ item: PokemonSummary) {
+        guard let stringUrl = item.url else { return }
+
+        router.process(route: .moveDetail(stringUrl))
+    }
 }

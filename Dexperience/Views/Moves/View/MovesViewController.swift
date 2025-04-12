@@ -68,9 +68,9 @@ final class MovesViewController<R: MovesRouter>: UICollectionViewController, UIS
     }
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let pokemon = dataSource.itemIdentifier(for: indexPath) else { return }
+        guard let move = dataSource.itemIdentifier(for: indexPath) else { return }
 
-        print(pokemon)
+        viewModel.showDetail(move)
     }
 
     func updateSearchResults(for searchController: UISearchController) {

@@ -1,35 +1,37 @@
 //
-//  ItemDetailViewController.swift
+//  MoveDetailViewController.swift
 //  Dexperience
 //
-//  Created by Byron on 4/10/25.
+//  Created by Byron on 4/11/25.
 //
 
 import UIKit
 
-final class ItemDetailViewController<R: ItemsRouter>: UIViewController, UICollectionViewDelegate,  UIScrollViewDelegate {
+final class MoveDetailViewController<R: MovesRouter>: UIViewController, UICollectionViewDelegate,  UIScrollViewDelegate {
 
     private enum Section: CaseIterable {
-        case main
+        case infoList
+        case stats
+    }
+
+    private enum MoveItem: Hashable {
+        case info(String)
+        case stat(Move)
     }
 
     // MARK: - Properties
 
-    private let viewModel: ItemDetailViewModel<R>
+    private let viewModel: MoveDetailViewModel<R>
 
-    private let headerView = ItemDetailHeaderView()
+    private let headerView = MoveDetailHeaderView()
 
     private var headerViewTopConstraint: NSLayoutConstraint?
     private var containerViewTopConstraint: NSLayoutConstraint?
 
-    private typealias DataSource = UICollectionViewDiffableDataSource<Section, String>
-    private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, String>
+    private typealias DataSource = UICollectionViewDiffableDataSource<Section, MoveItem>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, MoveItem>
 
-    private lazy var backgroundGradientLayer = GradientProvider.make(style: .custom([
-        #colorLiteral(red: 0.4404543042, green: 0.8308128119, blue: 0.7981370091, alpha: 1),
-        #colorLiteral(red: 0.4650884867, green: 0.8307561278, blue: 0.6747831106, alpha: 1),
-        #colorLiteral(red: 0.485091567, green: 0.8347114921, blue: 0.5588895082, alpha: 1)
-    ]))
+    private var backgroundGradientLayer: CAGradientLayer? = GradientProvider.softGradient(baseColor: .tintColor)
 
     private lazy var navigationTitleLabel: UILabel = {
         let label = UILabel()
@@ -59,6 +61,7 @@ final class ItemDetailViewController<R: ItemsRouter>: UIViewController, UICollec
 
         button.setImage(UIImage(resource: .closeIcon), for: .normal)
         button.tintColor = .white
+
         button.translatesAutoresizingMaskIntoConstraints = false
 
         return button
@@ -79,6 +82,8 @@ final class ItemDetailViewController<R: ItemsRouter>: UIViewController, UICollec
         collectionView.layer.cornerRadius = 48
         collectionView.delegate = self
 
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+
         return collectionView
     }()
 
@@ -98,11 +103,20 @@ final class ItemDetailViewController<R: ItemsRouter>: UIViewController, UICollec
         cell.backgroundConfiguration = backgroundConfig
     }
 
+    private let statCellRegistration = UICollectionView.CellRegistration<MoveStatsCell, MoveItem> { cell, _, item in
+        guard case let .stat(move) = item else { return }
+
+        cell.configure(with: move)
+    }
+
     private lazy var dataSource: DataSource = {
         let dataSource = DataSource(collectionView: collectionView) { collectionView, indexPath, item -> UICollectionViewCell in
-            let configType = self.infoCellRegistration
-
-            return collectionView.dequeueConfiguredReusableCell(using: configType, for: indexPath, item: item)
+            switch item {
+            case .info(let text):
+                return collectionView.dequeueConfiguredReusableCell(using: self.infoCellRegistration, for: indexPath, item: text)
+            case .stat:
+                return collectionView.dequeueConfiguredReusableCell(using: self.statCellRegistration, for: indexPath, item: item)
+            }
         }
 
         return dataSource
@@ -110,7 +124,7 @@ final class ItemDetailViewController<R: ItemsRouter>: UIViewController, UICollec
 
     // MARK: - Initializers
 
-    init(viewModel: ItemDetailViewModel<R>) {
+    init(viewModel: MoveDetailViewModel<R>) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -131,7 +145,7 @@ final class ItemDetailViewController<R: ItemsRouter>: UIViewController, UICollec
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        backgroundGradientLayer.frame = view.bounds
+        backgroundGradientLayer?.frame = view.bounds
     }
 
     // MARK: - ScrollView
@@ -165,11 +179,10 @@ final class ItemDetailViewController<R: ItemsRouter>: UIViewController, UICollec
 
 // MARK: - Setup
 
-private extension ItemDetailViewController {
+private extension MoveDetailViewController {
 
     func setupUI() {
         view.backgroundColor = .systemBackground
-        view.layer.insertSublayer(backgroundGradientLayer, at: 0)
     }
 
     func setupNavigation() {
@@ -197,8 +210,6 @@ private extension ItemDetailViewController {
         view.addSubview(headerView)
 
         headerView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-
 
         headerViewTopConstraint = headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30)
         containerViewTopConstraint = containerView.topAnchor.constraint(equalTo: headerView.topAnchor, constant: viewModel.containerTopConstraintConstant)
@@ -224,7 +235,14 @@ private extension ItemDetailViewController {
         var snapshot = Snapshot()
 
         snapshot.appendSections(Section.allCases)
-        Section.allCases.forEach { snapshot.appendItems(viewModel.infoList, toSection: $0) }
+
+        let infoItems = viewModel.infoList.map { MoveItem.info($0) }
+
+        snapshot.appendItems(infoItems, toSection: .infoList)
+
+        if let move = viewModel.move {
+            snapshot.appendItems([MoveItem.stat(move)], toSection: .stats)
+        }
 
         dataSource.apply(snapshot)
 
@@ -236,10 +254,19 @@ private extension ItemDetailViewController {
             do {
                 try await viewModel.fetchDetails()
 
-                if let item = viewModel.item {
-                    navigationTitleLabel.text = item.name?.formatted
-                    headerView.configure(item)
+                if let move = viewModel.move {
+                    navigationTitleLabel.text = move.name?.formatted
+                    headerView.configure(move)
                     applySnapshot()
+                }
+
+                if let moveType = viewModel.moveType {
+                    view.tintColor = moveType.color
+                    backgroundGradientLayer = GradientProvider.softGradient(baseColor: moveType.color)
+
+                    guard let backgroundGradientLayer else { return }
+
+                    view.layer.insertSublayer(backgroundGradientLayer, at: 0)
                 }
             } catch let error {
                 print(error.localizedDescription)
