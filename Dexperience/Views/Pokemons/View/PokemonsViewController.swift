@@ -71,7 +71,7 @@ final class PokemonsViewController<R: PokemonsRouter>: UICollectionViewControlle
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let pokemon = dataSource.itemIdentifier(for: indexPath) else { return }
 
-        print(pokemon)
+        viewModel.showDetail(pokemon)
     }
 
     override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {

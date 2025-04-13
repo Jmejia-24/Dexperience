@@ -7,4 +7,16 @@
 
 enum PokemonsTransition {
 
+    case pokemonDetail(String)
+
+    var identifier: String {
+        String(describing: self)
+    }
+
+    func coordinatorFor<R: PokemonsRouter>(router: R) -> Coordinator {
+        return switch self {
+        case .pokemonDetail(let stringUrl):
+            PokemonDetailCoordinator(router: router, stringUrl: stringUrl)
+        }
+    }
 }

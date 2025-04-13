@@ -37,4 +37,33 @@ extension APIManager: PokemonsRepository {
 
         return try await execute(request)
     }
+
+    func fetchSpecie(url: URL) async throws -> Specie {
+        let request = Request(with: url)
+
+        return try await execute(request)
+    }
+
+    func fetchEvolutionChain(url: URL) async throws -> EvolutionChainResponse {
+        let request = Request(with: url)
+
+        return try await execute(request)
+    }
+
+    func fetchPokemon(from name: String) async throws -> Pokemon {
+        let request = Request(
+            endpoint: .pokemon,
+            pathComponents: [
+                name
+            ],
+        )
+
+        return try await execute(request)
+    }
+
+    func fetchAbility(url: URL) async throws -> Ability {
+        let request = Request(with: url)
+
+        return try await execute(request)
+    }
 }

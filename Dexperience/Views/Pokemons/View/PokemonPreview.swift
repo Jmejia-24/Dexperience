@@ -77,9 +77,9 @@ private extension PokemonPreview {
     func loadData() {
         Task {
             do {
-                try await viewModel.loadOffensiveDamageRelations()
+                try await viewModel.loadData()
                 await MainActor.run {
-                    setupOffensiveStack()
+                    setupOffensiveMatrixView()
                 }
 
                 cardView.configure(with: viewModel.pokemon)
@@ -105,55 +105,12 @@ private extension PokemonPreview {
         ])
     }
 
-    func setupOffensiveStack() {
-        let sortedOffensiveData = viewModel.offensiveData.sorted(by: { $0.key.rawValue < $1.key.rawValue })
+    func setupOffensiveMatrixView() {
+        guard let types = viewModel.pokemon?.types else { return }
 
-        for rowStart in stride(from: 0, to: sortedOffensiveData.count, by: viewModel.columns) {
-            let rowStack = UIStackView()
+        let viewModel = DamageMatrixViewModel(types: types, mode: .offensive)
+        let matrixView = DamageMatrixView(viewModel: viewModel)
 
-            rowStack.axis = .horizontal
-            rowStack.alignment = .center
-            rowStack.distribution = .fillEqually
-            rowStack.spacing = 8
-
-            let rowEnd = min(rowStart + viewModel.columns, sortedOffensiveData.count)
-            let rowItems = sortedOffensiveData[rowStart..<rowEnd]
-
-            for (typeName, multiplier) in rowItems {
-                let cellView = makeCell(for: typeName, multiplier: multiplier)
-
-                rowStack.addArrangedSubview(cellView)
-            }
-
-            typesInfoStack.addArrangedSubview(rowStack)
-        }
-    }
-
-    func makeCell(for type: PokemonType, multiplier: Double) -> UIView {
-        let imageView = UIImageView()
-
-        imageView.contentMode = .scaleAspectFit
-        imageView.image = type.image
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            imageView.widthAnchor.constraint(equalToConstant: 35),
-            imageView.heightAnchor.constraint(equalToConstant: 35)
-        ])
-
-        let label = UILabel()
-
-        label.text = viewModel.formatMultiplier(multiplier)
-        label.font = .systemFont(ofSize: 20)
-        label.textColor = .label
-        label.textAlignment = .center
-
-        let container = UIStackView(arrangedSubviews: [imageView, label])
-
-        container.axis = .horizontal
-        container.alignment = .center
-        container.spacing = 4
-
-        return container
+        contentStack.addArrangedSubview(matrixView)
     }
 }

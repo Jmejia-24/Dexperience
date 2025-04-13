@@ -22,7 +22,7 @@ final class PokemonPreviewViewModel {
         self.api = api
     }
 
-    func loadOffensiveDamageRelations() async throws {
+    func loadData() async throws {
         pokemon = try await api.fetchPokemon(url: pokemonURL)
 
         if let pokemonTypesUrls = pokemon?.types?.compactMap({ URL(string: $0.type?.url ?? "") }) {

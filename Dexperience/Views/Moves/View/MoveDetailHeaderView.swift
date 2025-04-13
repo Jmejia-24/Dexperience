@@ -12,7 +12,7 @@ final class MoveDetailHeaderView: UIView {
     private let typeImageView: UIImageView = {
         let imageView = UIImageView()
 
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.image = #imageLiteral(resourceName: "PlaceholderImage")
         imageView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -22,7 +22,7 @@ final class MoveDetailHeaderView: UIView {
     private lazy var tagImageView: UIImageView = {
         let imageView = UIImageView()
 
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
 
         imageView.translatesAutoresizingMaskIntoConstraints = false
 
