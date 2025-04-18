@@ -90,7 +90,7 @@ private extension PokemonPreview {
     }
 
     func setupView() {
-        view.backgroundColor = .secondarySystemBackground
+        view.backgroundColor = .systemBackground
         view.layer.cornerRadius = 16
         view.layer.masksToBounds = true
 

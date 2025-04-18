@@ -14,36 +14,17 @@ final class ItemCellViewModel {
     private let api: ItemsRepository
     private let itemURL: String?
 
-    private(set) var item: Item?
-
-    var onUpdate: (() -> Void)?
-
     // MARK: - Initializer
 
     init(stringUrl: String?, api: ItemsRepository = APIManager()) {
         self.itemURL = stringUrl
         self.api = api
-
-        Task { @MainActor in
-            await fetchDetails()
-        }
     }
-}
 
-private extension ItemCellViewModel {
-
-    // MARK: - Data Fetching
-
-    func fetchDetails() async {
+    func fetchDetails() async throws -> Item? {
         guard let itemURL,
-              let url = URL(string: itemURL) else { return }
+              let url = URL(string: itemURL) else { return nil }
 
-        do {
-            item = try await api.fetchItem(url: url)
-
-            onUpdate?()
-        } catch {
-            onUpdate?()
-        }
+        return try await api.fetchItem(url: url)
     }
 }

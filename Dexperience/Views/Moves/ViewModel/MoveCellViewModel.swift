@@ -17,36 +17,19 @@ final class MoveCellViewModel {
     private(set) var move: Move?
     private(set) var type: PokemonType?
 
-    var onUpdate: (() -> Void)?
-
     // MARK: - Initializer
 
     init(stringUrl: String?, api: MovesRepository = APIManager()) {
         self.moveURL = stringUrl
         self.api = api
-
-        Task { @MainActor in
-            await fetchDetails()
-        }
     }
-}
-
-private extension MoveCellViewModel {
-
-    // MARK: - Data Fetching
 
     func fetchDetails() async {
         guard let moveURL,
               let url = URL(string: moveURL) else { return }
 
-        do {
-            move = try await api.fetchMove(url: url)
+        move = try? await api.fetchMove(url: url)
 
-            type = PokemonType(rawValue: move?.type?.name ?? "")
-
-            onUpdate?()
-        } catch {
-            onUpdate?()
-        }
+        type = PokemonType(rawValue: move?.type?.name ?? "")
     }
 }

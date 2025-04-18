@@ -14,36 +14,17 @@ final class PokemonCellViewModel {
     private let api: PokemonsRepository
     private let pokemonURL: String?
 
-    private(set) var pokemon: Pokemon?
-
-    var onUpdate: (() -> Void)?
-
     // MARK: - Initializer
 
     init(stringUrl: String?, api: PokemonsRepository = APIManager()) {
         self.pokemonURL = stringUrl
         self.api = api
-
-        Task { @MainActor in
-            await fetchDetails()
-        }
     }
-}
 
-private extension PokemonCellViewModel {
-
-    // MARK: - Data Fetching
-
-    func fetchDetails() async {
+    func fetchDetails() async throws -> Pokemon? {
         guard let pokemonURL,
-              let url = URL(string: pokemonURL) else { return }
+              let url = URL(string: pokemonURL) else { return nil }
 
-        do {
-            pokemon = try await api.fetchPokemon(url: url)
-
-            onUpdate?()
-        } catch {
-            onUpdate?()
-        }
+        return try await api.fetchPokemon(url: url)
     }
 }

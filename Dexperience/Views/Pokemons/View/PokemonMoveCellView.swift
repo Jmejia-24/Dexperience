@@ -64,14 +64,12 @@ final class PokemonMoveCellView: UICollectionViewCell {
     // MARK: - Configuration
 
     func configure(with viewModel: PokemonMoveCellViewModel) {
-        updateUI(with: viewModel)
+        Task { @MainActor in
+            await viewModel.fetchDetails()
 
-        viewModel.onUpdate = { [weak self] in
-            guard let self else { return }
+            updateUI(with: viewModel)
 
-            DispatchQueue.main.async {
-                self.updateUI(with: viewModel)
-            }
+            (superview as? UICollectionView)?.performBatchUpdates(nil)
         }
     }
 }

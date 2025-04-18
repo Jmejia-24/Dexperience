@@ -23,13 +23,10 @@ final class PokemonCellView: UICollectionViewCell {
     // MARK: - Configuration
 
     func configure(with viewModel: PokemonCellViewModel) {
-        cardView.configure(with: viewModel.pokemon)
+        Task { @MainActor in
+            let pokemon = try? await viewModel.fetchDetails()
 
-        viewModel.onUpdate = { [weak self] in
-            guard let self else { return }
-            DispatchQueue.main.async {
-                self.cardView.configure(with: viewModel.pokemon)
-            }
+            cardView.configure(with: pokemon)
         }
     }
 }
@@ -39,7 +36,7 @@ private extension PokemonCellView {
     // MARK: - Setup
 
     func setupView() {
-        contentView.backgroundColor = .secondarySystemBackground
+        contentView.backgroundColor = .systemBackground
 
         contentView.addSubview(cardView)
         cardView.translatesAutoresizingMaskIntoConstraints = false

@@ -41,24 +41,18 @@ final class MoveCellView: UICollectionViewCell {
     // MARK: - Configuration
 
     func configure(with viewModel: MoveCellViewModel) {
-        updateUI(with: viewModel)
+        Task { @MainActor in
+            await viewModel.fetchDetails()
 
-        viewModel.onUpdate = { [weak self] in
-            guard let self else { return }
-
-            DispatchQueue.main.async {
-                self.updateUI(with: viewModel)
-            }
+            updateUI(with: viewModel)
         }
     }
 }
 
 private extension MoveCellView {
 
-    // MARK: - Setup
-
     func setupView() {
-        contentView.backgroundColor = .secondarySystemBackground
+        contentView.backgroundColor = .systemBackground
 
         contentView.addSubview(nameLabel)
         contentView.addSubview(typeImageView)

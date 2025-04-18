@@ -20,19 +20,17 @@ final class AbilityCellViewModel {
         entry.isHidden ?? false
     }
 
-    private(set) var shortEffect: String = ""
-
     init(entry: AbilityEntry, api: PokemonsRepository = APIManager()) {
         self.entry = entry
         self.api = api
     }
 
-    func loadAbilityDescription() async throws {
+    func loadAbilityDescription() async throws -> String? {
         guard let urlString = entry.ability?.url,
-              let url = URL(string: urlString) else { return }
+              let url = URL(string: urlString) else { return nil }
 
         let ability = try await api.fetchAbility(url: url)
 
-        shortEffect = ability.effectEntries?.first(where: { $0.language?.name == .en })?.shortEffect ?? ""
+        return ability.effectEntries?.first(where: { $0.language?.name == .en })?.shortEffect ?? ""
     }
 }

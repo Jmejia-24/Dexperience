@@ -77,16 +77,12 @@ final class AbilityCell: UICollectionViewCell {
         indicatorImageView.isHidden = !viewModel.isHidden
         nameLabel.text = viewModel.name.formatted
 
-        descriptionLabel.text = "Loading..."
+        Task { @MainActor in
+            let shortEffect = try? await viewModel.loadAbilityDescription()
 
-        Task {
-            try? await viewModel.loadAbilityDescription()
+            descriptionLabel.text = shortEffect
 
-            await MainActor.run {
-                descriptionLabel.text = viewModel.shortEffect
-
-                (superview as? UICollectionView)?.performBatchUpdates(nil)
-            }
+            (superview as? UICollectionView)?.performBatchUpdates(nil)
         }
     }
 }

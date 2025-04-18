@@ -78,14 +78,10 @@ final class ItemCellView: UICollectionViewCell {
     // MARK: - Configuration
 
     func configure(with viewModel: ItemCellViewModel) {
-        updateUI(with: viewModel)
+        Task { @MainActor in
+            let item = try? await viewModel.fetchDetails()
 
-        viewModel.onUpdate = { [weak self] in
-            guard let self else { return }
-
-            DispatchQueue.main.async {
-                self.updateUI(with: viewModel)
-            }
+            updateUI(with: item)
         }
     }
 }
@@ -95,7 +91,7 @@ private extension ItemCellView {
     // MARK: - Setup
 
     func setupView() {
-        contentView.backgroundColor = .secondarySystemBackground
+        contentView.backgroundColor = .systemBackground
 
         contentView.addSubview(itemImageView)
         contentView.addSubview(costImageView)
@@ -126,10 +122,10 @@ private extension ItemCellView {
         ])
     }
 
-    func updateUI(with viewModel: ItemCellViewModel) {
-        nameLabel.text = viewModel.item?.name?.formatted
-        costLabel.text = "\(viewModel.item?.cost ?? 0)"
+    func updateUI(with item: Item?) {
+        nameLabel.text = item?.name?.formatted
+        costLabel.text = "\(item?.cost ?? 0)"
 
-        itemImageView.loadImage(from: URL(string: viewModel.item?.sprites?.spriteDefault ?? ""))
+        itemImageView.loadImage(from: URL(string: item?.sprites?.spriteDefault ?? ""))
     }
 }
