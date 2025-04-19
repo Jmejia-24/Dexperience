@@ -38,6 +38,15 @@ final class BreedingCell: TripleColumnBaseCell {
         return view
     }()
 
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     func configure(with model: BreedingInfo) {
         eggGroupLabel.text = "Egg Group"
         eggGroupValueLabel.text = model.eggGroups.joined(separator: "\n")
@@ -50,7 +59,12 @@ final class BreedingCell: TripleColumnBaseCell {
         maleLabel.text = "\(model.genderRatio.male)%"
 
         ringView.setProgress(percentage: model.genderRatio.female, animated: true)
+    }
+}
 
+private extension BreedingCell {
+
+    func setupViews() {
         let column1 = makeInfoStack(title: eggGroupLabel, value: eggGroupValueLabel)
         let column2 = makeInfoStack(title: hatchTimeLabel, value: hatchTimeValueLabel)
 
@@ -74,9 +88,6 @@ final class BreedingCell: TripleColumnBaseCell {
 
         configureColumns([column1, column2, column3])
     }
-}
-
-private extension BreedingCell {
 
     func makeHeaderLabel(text: String) -> UILabel {
         let label = UILabel()

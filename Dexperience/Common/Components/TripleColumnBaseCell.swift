@@ -25,7 +25,7 @@ class TripleColumnBaseCell: UICollectionViewCell {
     private func setupBaseLayout() {
         columnStack.axis = .horizontal
         columnStack.distribution = .fillEqually
-        columnStack.alignment = .top
+        columnStack.alignment = .fill
         columnStack.spacing = 0
         columnStack.translatesAutoresizingMaskIntoConstraints = false
 

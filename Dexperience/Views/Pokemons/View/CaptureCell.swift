@@ -37,12 +37,26 @@ final class CaptureCell: TripleColumnBaseCell {
         return view
     }()
 
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     func configure(with model: CaptureInfo) {
         habitatValueLabel.text = model.habitat
         generationValueLabel.text = model.generation
         captureValueLabel.text = "\(model.captureRate)%"
         ringView.setProgress(percentage: CGFloat(model.captureRate), animated: true)
+    }
+}
 
+private extension CaptureCell {
+
+    func setupViews() {
         let column1 = makeInfoStack(title: habitatLabel, value: habitatValueLabel)
         let column2 = makeInfoStack(title: generationLabel, value: generationValueLabel)
 
@@ -56,9 +70,6 @@ final class CaptureCell: TripleColumnBaseCell {
 
         configureColumns([column1, column2, column3])
     }
-}
-
-private extension CaptureCell {
 
     func makeHeaderLabel(text: String) -> UILabel {
         let label = UILabel()
