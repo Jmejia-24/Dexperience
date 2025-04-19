@@ -16,6 +16,10 @@ final class MoveDetailViewModel<R: MovesRouter> {
     private let moveURL: String?
 
     let containerTopConstraintConstant: CGFloat = 58
+    let headerTopConstraintConstant: CGFloat = 30
+    
+    var isHeaderHidden = false
+
     var move: Move?
     var moveType: PokemonType?
     var infoList = [String]()

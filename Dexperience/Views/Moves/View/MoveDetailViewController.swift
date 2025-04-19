@@ -151,28 +151,18 @@ final class MoveDetailViewController<R: MovesRouter>: UIViewController, UICollec
     // MARK: - ScrollView
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard scrollView.contentSize.height > scrollView.frame.height else { return }
+        let translationY = scrollView.panGestureRecognizer.translation(in: scrollView).y
+        let deltaThreshold: CGFloat = 10
 
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
+        if translationY < -deltaThreshold && !viewModel.isHeaderHidden {
+            toggleHeader(hidden: true)
 
-            let y = scrollView.contentOffset.y
+            scrollView.panGestureRecognizer.setTranslation(.zero, in: scrollView)
 
-            let swipingDown = y <= 0
-            let shouldSnap = y > 30
-            let headerHeight = self.headerView.totalheight
+        } else if translationY > deltaThreshold && viewModel.isHeaderHidden {
+            toggleHeader(hidden: false)
 
-            UIView.animate(withDuration: 0.3) {
-                self.headerView.setAlpha(swipingDown ? 1.0 : 0.0)
-                self.navigationTitleLabel.alpha = swipingDown ? 0.0 : 1.0
-            }
-
-            UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.3, delay: .zero, animations: {
-                self.headerViewTopConstraint?.constant = shouldSnap ? -headerHeight : 30
-                self.containerViewTopConstraint?.constant = shouldSnap ? headerHeight + 35 : self.viewModel.containerTopConstraintConstant
-
-                self.view.layoutIfNeeded()
-            })
+            scrollView.panGestureRecognizer.setTranslation(.zero, in: scrollView)
         }
     }
 }
@@ -245,8 +235,6 @@ private extension MoveDetailViewController {
         }
 
         dataSource.apply(snapshot)
-
-        collectionView.isScrollEnabled = collectionView.contentSize.height > collectionView.bounds.height
     }
 
     func fetchInitData() {
@@ -271,6 +259,26 @@ private extension MoveDetailViewController {
             } catch let error {
                 print(error.localizedDescription)
             }
+        }
+    }
+
+    func toggleHeader(hidden: Bool) {
+        viewModel.isHeaderHidden = hidden
+
+        let headerH = headerView.totalheight
+        let newHeaderTop = hidden ? -headerH : viewModel.headerTopConstraintConstant
+        let newContainerTop = hidden ? (headerH + 35) : viewModel.containerTopConstraintConstant
+
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut) { [weak self] in
+            guard let self else { return }
+
+            headerViewTopConstraint?.constant = newHeaderTop
+            containerViewTopConstraint?.constant = newContainerTop
+
+            headerView.setAlpha(hidden ? 0 : 1)
+            navigationTitleLabel.alpha = hidden ? 1 : 0
+
+            view.layoutIfNeeded()
         }
     }
 }

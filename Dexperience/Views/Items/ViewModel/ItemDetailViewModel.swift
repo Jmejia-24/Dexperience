@@ -16,6 +16,10 @@ final class ItemDetailViewModel<R: ItemsRouter> {
     private let itemURL: String?
 
     let containerTopConstraintConstant: CGFloat = 67
+    let headerTopConstraintConstant: CGFloat = 30
+
+    var isHeaderHidden = false
+
     var item: Item?
     var infoList = [String]()
 
