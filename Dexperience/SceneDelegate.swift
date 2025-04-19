@@ -17,22 +17,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let scene = (scene as? UIWindowScene) else { return }
-        loadRocketSimConnect()
+
         window = UIWindow(windowScene: scene)
         window?.rootViewController = app.navigationController
         window?.makeKeyAndVisible()
 
         app.start()
-    }
-
-    private func loadRocketSimConnect() {
-        #if DEBUG
-        guard (Bundle(path: "/Applications/RocketSim.app/Contents/Frameworks/RocketSimConnectLinker.nocache.framework")?.load() == true) else {
-            print("Failed to load linker framework")
-            return
-        }
-        print("RocketSim Connect successfully linked")
-        #endif
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

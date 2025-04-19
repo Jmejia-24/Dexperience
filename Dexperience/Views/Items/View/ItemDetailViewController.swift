@@ -138,17 +138,19 @@ final class ItemDetailViewController<R: ItemsRouter>: UIViewController, UICollec
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let translationY = scrollView.panGestureRecognizer.translation(in: scrollView).y
-        let deltaThreshold: CGFloat = 10
 
-        if translationY < -deltaThreshold && !viewModel.isHeaderHidden {
-            toggleHeader(hidden: true)
-
+        if processHeaderToggle(translationY: translationY) {
             scrollView.panGestureRecognizer.setTranslation(.zero, in: scrollView)
+        }
+    }
 
-        } else if translationY > deltaThreshold && viewModel.isHeaderHidden {
-            toggleHeader(hidden: false)
+    @objc private func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
+        guard gesture.state == .changed else { return }
 
-            scrollView.panGestureRecognizer.setTranslation(.zero, in: scrollView)
+        let translationY = gesture.translation(in: view).y
+
+        if processHeaderToggle(translationY: translationY) {
+            gesture.setTranslation(.zero, in: view)
         }
     }
 }
@@ -182,13 +184,19 @@ private extension ItemDetailViewController {
     }
 
     func setupCollectionView() {
+        headerView.addGestureRecognizer(
+            UIPanGestureRecognizer(
+                target: self,
+                action: #selector(handlePanGesture)
+            )
+        )
+
         view.addSubview(containerView)
         containerView.addSubview(collectionView)
         view.addSubview(headerView)
 
         headerView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-
 
         headerViewTopConstraint = headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30)
         containerViewTopConstraint = containerView.topAnchor.constraint(equalTo: headerView.topAnchor, constant: viewModel.containerTopConstraintConstant)
@@ -233,6 +241,22 @@ private extension ItemDetailViewController {
                 print(error.localizedDescription)
             }
         }
+    }
+
+    func processHeaderToggle(translationY: CGFloat) -> Bool {
+        let deltaThreshold: CGFloat = 10
+
+        if translationY < -deltaThreshold && !viewModel.isHeaderHidden {
+            toggleHeader(hidden: true)
+
+            return true
+        } else if translationY > deltaThreshold && viewModel.isHeaderHidden {
+            toggleHeader(hidden: false)
+
+            return true
+        }
+
+        return false
     }
 
     func toggleHeader(hidden: Bool) {

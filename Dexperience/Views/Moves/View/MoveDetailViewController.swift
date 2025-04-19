@@ -152,17 +152,19 @@ final class MoveDetailViewController<R: MovesRouter>: UIViewController, UICollec
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let translationY = scrollView.panGestureRecognizer.translation(in: scrollView).y
-        let deltaThreshold: CGFloat = 10
 
-        if translationY < -deltaThreshold && !viewModel.isHeaderHidden {
-            toggleHeader(hidden: true)
-
+        if processHeaderToggle(translationY: translationY) {
             scrollView.panGestureRecognizer.setTranslation(.zero, in: scrollView)
+        }
+    }
 
-        } else if translationY > deltaThreshold && viewModel.isHeaderHidden {
-            toggleHeader(hidden: false)
+    @objc private func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
+        guard gesture.state == .changed else { return }
 
-            scrollView.panGestureRecognizer.setTranslation(.zero, in: scrollView)
+        let translationY = gesture.translation(in: view).y
+
+        if processHeaderToggle(translationY: translationY) {
+            gesture.setTranslation(.zero, in: view)
         }
     }
 }
@@ -260,6 +262,22 @@ private extension MoveDetailViewController {
                 print(error.localizedDescription)
             }
         }
+    }
+
+    func processHeaderToggle(translationY: CGFloat) -> Bool {
+        let deltaThreshold: CGFloat = 10
+
+        if translationY < -deltaThreshold && !viewModel.isHeaderHidden {
+            toggleHeader(hidden: true)
+
+            return true
+        } else if translationY > deltaThreshold && viewModel.isHeaderHidden {
+            toggleHeader(hidden: false)
+
+            return true
+        }
+
+        return false
     }
 
     func toggleHeader(hidden: Bool) {

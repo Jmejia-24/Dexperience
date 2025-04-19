@@ -244,16 +244,8 @@ final class PokemonDetailViewController<R: PokemonsRouter>: UIViewController, UI
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let translationY = scrollView.panGestureRecognizer.translation(in: scrollView).y
-        let deltaThreshold: CGFloat = 10
 
-        if translationY < -deltaThreshold && !viewModel.isHeaderHidden {
-            toggleHeader(hidden: true)
-
-            scrollView.panGestureRecognizer.setTranslation(.zero, in: scrollView)
-
-        } else if translationY > deltaThreshold && viewModel.isHeaderHidden {
-            toggleHeader(hidden: false)
-
+        if processHeaderToggle(translationY: translationY) {
             scrollView.panGestureRecognizer.setTranslation(.zero, in: scrollView)
         }
     }
@@ -261,6 +253,16 @@ final class PokemonDetailViewController<R: PokemonsRouter>: UIViewController, UI
     func didSelectTab(at tab: Tab) {
         viewModel.currentTab = tab
         applySnapshot()
+    }
+
+    @objc private func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
+        guard gesture.state == .changed else { return }
+
+        let translationY = gesture.translation(in: view).y
+
+        if processHeaderToggle(translationY: translationY) {
+            gesture.setTranslation(.zero, in: view)
+        }
     }
 }
 
@@ -292,6 +294,13 @@ private extension PokemonDetailViewController {
     }
 
     func setupCollectionView() {
+        headerView.addGestureRecognizer(
+            UIPanGestureRecognizer(
+                target: self,
+                action: #selector(handlePanGesture)
+            )
+        )
+
         headerView.delegate = self
 
         view.addSubview(containerView)
@@ -399,6 +408,22 @@ private extension PokemonDetailViewController {
                 print(error.localizedDescription)
             }
         }
+    }
+
+    func processHeaderToggle(translationY: CGFloat) -> Bool {
+        let deltaThreshold: CGFloat = 10
+
+        if translationY < -deltaThreshold && !viewModel.isHeaderHidden {
+            toggleHeader(hidden: true)
+
+            return true
+        } else if translationY > deltaThreshold && viewModel.isHeaderHidden {
+            toggleHeader(hidden: false)
+
+            return true
+        }
+
+        return false
     }
 
     func toggleHeader(hidden: Bool) {
