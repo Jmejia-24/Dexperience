@@ -82,7 +82,7 @@ final class PokemonCardView: UIView {
 
     func prepareForReuse() {
         typesStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-
+        pokemonImageView.prepareForReuse()
         nameLabel.text = nil
         idLabel.text = nil
     }

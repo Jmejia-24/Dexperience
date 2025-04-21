@@ -12,8 +12,9 @@ final class AsyncCachedImageView: UIImageView {
     private var task: Task<Void, Never>?
     private let spinner = UIActivityIndicatorView(style: .medium)
     private let placeholderImage: UIImage?
+    private var currentURL: URL?
 
-    init(placeholderImage: UIImage? = #imageLiteral(resourceName: "PlaceholderImage")) {
+    init(placeholderImage: UIImage? = UIImage(resource: .placeholder)) {
         self.placeholderImage = placeholderImage
         super.init(frame: .zero)
         setup()
@@ -24,9 +25,12 @@ final class AsyncCachedImageView: UIImageView {
     }
 
     func loadImage(from url: URL?) {
-        image = placeholderImage
-        spinner.startAnimating()
+        guard url != currentURL else { return }
 
+        currentURL = url
+        image = placeholderImage
+
+        spinner.startAnimating()
         task?.cancel()
 
         guard let url else {
@@ -34,34 +38,15 @@ final class AsyncCachedImageView: UIImageView {
             return
         }
 
-        if let cachedImage = ImageCacheManager.shared.image(for: url) {
-            self.image = cachedImage
-            spinner.stopAnimating()
-            return
-        }
-
         task = Task {
-            do {
-                let (data, _) = try await URLSession.shared.data(from: url)
+            let image = await SharedImageLoader.shared.loadImage(from: url)
 
-                guard let downloadedImage = UIImage(data: data) else {
-                    image = placeholderImage
-                    spinner.stopAnimating()
-                    return
-                }
+            await MainActor.run {
+                guard url == currentURL else { return }
 
-                ImageCacheManager.shared.save(image: downloadedImage, for: url)
+                self.image = image ?? placeholderImage
 
-                await MainActor.run {
-                    self.image = downloadedImage
-                    self.spinner.stopAnimating()
-                }
-            } catch {
-                print("Error downloading image: \(error)")
-                await MainActor.run {
-                    image = placeholderImage
-                    self.spinner.stopAnimating()
-                }
+                spinner.stopAnimating()
             }
         }
     }
@@ -69,6 +54,13 @@ final class AsyncCachedImageView: UIImageView {
     func reset() {
         task?.cancel()
         image = placeholderImage
+        spinner.stopAnimating()
+        currentURL = nil
+    }
+
+    func prepareForReuse() {
+        image = placeholderImage
+
         spinner.stopAnimating()
     }
 }
