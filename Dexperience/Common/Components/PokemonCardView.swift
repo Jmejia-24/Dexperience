@@ -80,6 +80,13 @@ final class PokemonCardView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func prepareForReuse() {
+        typesStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+
+        nameLabel.text = nil
+        idLabel.text = nil
+    }
+
     func configure(with pokemon: Pokemon?) {
         nameLabel.text = pokemon?.name?.capitalized
         idLabel.text = "#\(pokemon?.id ?? 0)"

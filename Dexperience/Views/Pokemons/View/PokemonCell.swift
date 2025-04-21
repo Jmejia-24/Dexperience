@@ -20,6 +20,11 @@ final class PokemonCellView: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        cardView.prepareForReuse()
+    }
+
     // MARK: - Configuration
 
     func configure(with viewModel: PokemonCellViewModel) {
