@@ -82,11 +82,9 @@ class GenericListViewController<Cell: UICollectionViewCell, Handler: GenericList
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         Task {
             do {
-                let more = try await handler.prefetch(at: indexPaths)
+                let more = try? await handler.prefetch(at: indexPaths)
 
-                applySnapshot(more)
-            } catch {
-                print("❌ Prefetch error: \(error)")
+                applySnapshot(more ?? [])
             }
         }
     }
@@ -127,7 +125,7 @@ private extension GenericListViewController {
 
             applySnapshot(result)
         } catch {
-            print("❌ Error inicial: \(error)")
+            presentAlert(type: .error, message: error.localizedDescription)
         }
     }
 }
