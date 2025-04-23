@@ -67,6 +67,4 @@ Based on the free design:
 
 ### 📽 Demo (GIF)
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/71f67767-9aae-4ce0-be40-b2f430698dba" alt="Pokédex Demo" width="300px"/>
-</p>
+👉 [Click here to view the full demo GIF](Demo/demo.gif)
