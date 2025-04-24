@@ -242,24 +242,28 @@ private extension MoveDetailViewController {
     func fetchInitData() {
         Task {
             do {
-                try await viewModel.fetchDetails()
+                try await withLoader { [weak self] in
+                    guard let self else { return }
 
-                if let move = viewModel.move {
-                    navigationTitleLabel.text = move.name?.formatted
-                    headerView.configure(move)
-                    applySnapshot()
+                    try await viewModel.fetchDetails()
+
+                    if let move = viewModel.move {
+                        navigationTitleLabel.text = move.name?.formatted
+                        headerView.configure(move)
+                        applySnapshot()
+                    }
+
+                    if let moveType = viewModel.moveType {
+                        view.tintColor = moveType.color
+                        backgroundGradientLayer = GradientProvider.softGradient(baseColor: moveType.color)
+
+                        guard let backgroundGradientLayer else { return }
+
+                        view.layer.insertSublayer(backgroundGradientLayer, at: 0)
+                    }
                 }
-
-                if let moveType = viewModel.moveType {
-                    view.tintColor = moveType.color
-                    backgroundGradientLayer = GradientProvider.softGradient(baseColor: moveType.color)
-
-                    guard let backgroundGradientLayer else { return }
-
-                    view.layer.insertSublayer(backgroundGradientLayer, at: 0)
-                }
-            } catch let error {
-                print(error.localizedDescription)
+            } catch {
+                presentAlert(type: .error, message: error.localizedDescription)
             }
         }
     }

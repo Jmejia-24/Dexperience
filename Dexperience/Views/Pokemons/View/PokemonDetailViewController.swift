@@ -383,29 +383,33 @@ private extension PokemonDetailViewController {
     func fetchInitData() {
         Task {
             do {
-                try await viewModel.fetchDetails()
+                try await withLoader { [weak self] in
+                    guard let self else { return }
 
-                if let pokemon = viewModel.pokemon {
-                    navigationTitleLabel.text = pokemon.name?.formatted
-                    headerView.configure(pokemon)
+                    try await viewModel.fetchDetails()
+
+                    if let pokemon = viewModel.pokemon {
+                        navigationTitleLabel.text = pokemon.name?.formatted
+                        headerView.configure(pokemon)
+                    }
+
+                    if let moveType = viewModel.pokemonType {
+                        view.tintColor = moveType.color
+                        backgroundGradientLayer = GradientProvider.softGradient(baseColor: moveType.color)
+
+                        guard let backgroundGradientLayer else { return }
+
+                        view.layer.insertSublayer(backgroundGradientLayer, at: 0)
+                    }
+
+                    try await viewModel.fetchSpecie()
+
+                    headerView.configureFlavorText(viewModel.flavorText)
+
+                    applySnapshot()
                 }
-
-                if let moveType = viewModel.pokemonType {
-                    view.tintColor = moveType.color
-                    backgroundGradientLayer = GradientProvider.softGradient(baseColor: moveType.color)
-
-                    guard let backgroundGradientLayer else { return }
-
-                    view.layer.insertSublayer(backgroundGradientLayer, at: 0)
-                }
-
-                try await viewModel.fetchSpecie()
-
-                headerView.configureFlavorText(viewModel.flavorText)
-
-                applySnapshot()
-            } catch let error {
-                print(error.localizedDescription)
+            } catch {
+                presentAlert(type: .error, message: error.localizedDescription)
             }
         }
     }

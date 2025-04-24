@@ -42,16 +42,18 @@ private extension TabBarViewController {
 
     func configureAppearance() {
         let appearance = UITabBarAppearance()
+
         appearance.configureWithTransparentBackground()
         appearance.backgroundEffect = .init(style: .prominent)
         appearance.shadowColor = .clear
         appearance.shadowImage = nil
 
-        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.secondaryLabel]
-        appearance.stackedLayoutAppearance.normal.iconColor = .secondaryLabel
-
-        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.label]
-        appearance.stackedLayoutAppearance.selected.iconColor = .black
+        appearance.applyItemColors(
+            normalTitleColor: .secondaryLabel,
+            normalIconColor: .secondaryLabel,
+            selectedTitleColor: .label,
+            selectedIconColor: .label
+        )
 
         tabBar.standardAppearance = appearance
         tabBar.scrollEdgeAppearance = appearance

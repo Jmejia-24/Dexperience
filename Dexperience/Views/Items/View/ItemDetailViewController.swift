@@ -230,15 +230,19 @@ private extension ItemDetailViewController {
     func fetchInitData() {
         Task {
             do {
-                try await viewModel.fetchDetails()
+                try await withLoader { [weak self] in
+                    guard let self else { return }
 
-                if let item = viewModel.item {
-                    navigationTitleLabel.text = item.name?.formatted
-                    headerView.configure(item)
-                    applySnapshot()
+                    try await viewModel.fetchDetails()
+
+                    if let item = viewModel.item {
+                        navigationTitleLabel.text = item.name?.formatted
+                        headerView.configure(item)
+                        applySnapshot()
+                    }
                 }
-            } catch let error {
-                print(error.localizedDescription)
+            } catch {
+                presentAlert(type: .error, message: error.localizedDescription)
             }
         }
     }
