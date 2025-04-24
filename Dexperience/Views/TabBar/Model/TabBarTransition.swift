@@ -17,22 +17,42 @@ enum TabBarTransition: Int, CaseIterable {
         String(describing: self)
     }
 
-    var image: UIImage? {
-        return switch self {
-        case .showPokemons:
-            UIImage(resource: .pokemonIcon)
-        case .showMoves:
-            UIImage(resource: .movesIcon)
-        case .showItems:
-            UIImage(resource: .itemsIcon)
-        }
+    var tabBarItem: UITabBarItem {
+        UITabBarItem(
+            title: title,
+            image: image,
+            tag: self.rawValue
+        )
     }
 
     func coordinatorFor<R: AppRouter>(router: R) -> Coordinator {
-        return switch self {
-            case .showPokemons: PokemonsCoordinator(router: router)
-            case .showMoves: MovesCoordinator(router: router)
-            case .showItems: ItemsCoordinator(router: router)
+        switch self {
+        case .showPokemons: PokemonsCoordinator(router: router)
+        case .showMoves: MovesCoordinator(router: router)
+        case .showItems: ItemsCoordinator(router: router)
         }
+    }
+}
+
+private extension TabBarTransition {
+
+    var iconResource: ImageResource {
+        switch self {
+        case .showPokemons: .pokemonIcon
+        case .showMoves: .movesIcon
+        case .showItems: .itemsIcon
+        }
+    }
+
+    var title: String {
+        switch self {
+        case .showPokemons: "Pokémon"
+        case .showMoves: "Moves"
+        case .showItems: "Items"
+        }
+    }
+
+    var image: UIImage? {
+        UIImage(resource: iconResource)
     }
 }

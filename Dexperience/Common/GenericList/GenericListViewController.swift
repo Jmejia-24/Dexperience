@@ -7,7 +7,7 @@
 
 import UIKit
 
-class GenericListViewController<Cell: UICollectionViewCell, Handler: GenericListHandler>: UICollectionViewController, UISearchResultsUpdating, UICollectionViewDataSourcePrefetching where Handler.Model: Hashable {
+class GenericListViewController<Cell: UICollectionViewCell, Handler: GenericListHandler>: UIViewController, UICollectionViewDelegate, UISearchResultsUpdating, UICollectionViewDataSourcePrefetching where Handler.Model: Hashable {
 
     enum Section: CaseIterable {
         case main
@@ -19,6 +19,22 @@ class GenericListViewController<Cell: UICollectionViewCell, Handler: GenericList
 
     private let handler: Handler
     private let cellRegistration: UICollectionView.CellRegistration<Cell, Model>
+
+    private lazy var backgroundGradientLayer = GradientProvider.make(style: .primary)
+
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: makeListLayout())
+
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.backgroundColor = .systemBackground
+
+        collectionView.delegate = self
+        collectionView.prefetchDataSource = self
+
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+
+        return collectionView
+    }()
 
     private lazy var dataSource: DataSource = {
         DataSource(collectionView: collectionView) { [weak self] collectionView, indexPath, item in
@@ -41,7 +57,7 @@ class GenericListViewController<Cell: UICollectionViewCell, Handler: GenericList
     init(handler: Handler, cellRegistration: UICollectionView.CellRegistration<Cell, Model>) {
         self.handler = handler
         self.cellRegistration = cellRegistration
-        super.init(collectionViewLayout: Self.makeListLayout())
+        super.init(nibName: nil, bundle: nil)
         setupUI()
     }
 
@@ -49,23 +65,20 @@ class GenericListViewController<Cell: UICollectionViewCell, Handler: GenericList
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        backgroundGradientLayer.frame = view.bounds
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         title = handler.title
-        collectionView.prefetchDataSource = self
-
-        Task {
-            await fetchInitial()
-        }
+        view.layer.insertSublayer(backgroundGradientLayer, at: 0)
+        
+        fetchInitial()
     }
 
-    private func setupUI() {
-        navigationItem.title = handler.title
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
-    }
-
-    static func makeListLayout() -> UICollectionViewCompositionalLayout {
+    func makeListLayout() -> UICollectionViewCompositionalLayout {
         let listConfig = UICollectionLayoutListConfiguration(appearance: .plain)
 
         return UICollectionViewCompositionalLayout.list(using: listConfig)
@@ -89,13 +102,13 @@ class GenericListViewController<Cell: UICollectionViewCell, Handler: GenericList
         }
     }
 
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
 
         handler.didSelect(item: item)
     }
 
-    override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
         guard let indexPath = indexPaths.first,
               let item = dataSource.itemIdentifier(for: indexPath) else { return nil }
 
@@ -106,6 +119,20 @@ class GenericListViewController<Cell: UICollectionViewCell, Handler: GenericList
 // MARK: - Private methods
 
 private extension GenericListViewController {
+
+    func setupUI() {
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+
+        view.addSubview(collectionView)
+
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 4),
+            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -4),
+        ])
+    }
 
     func applySnapshot(_ items: [Model]) {
         var snapshot = Snapshot()
@@ -119,13 +146,17 @@ private extension GenericListViewController {
         dataSource.apply(snapshot)
     }
 
-    func fetchInitial() async {
-        do {
-            let result = try await handler.fetchInitialData()
+    func fetchInitial() {
+        Task {
+            do {
+                let result = try await withLoader { [weak self] in
+                    try await self?.handler.fetchInitialData() ?? []
+                }
 
-            applySnapshot(result)
-        } catch {
-            presentAlert(type: .error, message: error.localizedDescription)
+                applySnapshot(result)
+            } catch {
+                presentAlert(type: .error, message: error.localizedDescription)
+            }
         }
     }
 }

@@ -12,8 +12,6 @@ final class TabBarViewController<R: TabBarRouter>: UITabBarController {
     // MARK: - Properties
 
     private let viewModel: TabBarViewModel<R>
-    private var topLineView: UIView?
-    private var gradientView: UIView?
 
     // MARK: - Initializers
 
@@ -30,21 +28,7 @@ final class TabBarViewController<R: TabBarRouter>: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        guard !viewModel.tabBarGradientApplied else {
-            updateTabBarGradientFrames()
-            return
-        }
-
-        applyTabBarCustomBackground()
-        addTabBarTopGradientLine()
-
-        viewModel.tabBarGradientApplied = true
+        configureAppearance()
     }
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
@@ -56,77 +40,20 @@ final class TabBarViewController<R: TabBarRouter>: UITabBarController {
 
 private extension TabBarViewController {
 
-    func setupUI() {
-        tabBar.tintColor = .label
-    }
+    func configureAppearance() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundEffect = .init(style: .prominent)
+        appearance.shadowColor = .clear
+        appearance.shadowImage = nil
 
-    func applyTabBarCustomBackground() {
-        guard let tabBarSuperview = tabBar.superview else { return }
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.secondaryLabel]
+        appearance.stackedLayoutAppearance.normal.iconColor = .secondaryLabel
 
-        let backgroundView = UIView()
+        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.label]
+        appearance.stackedLayoutAppearance.selected.iconColor = .black
 
-        backgroundView.translatesAutoresizingMaskIntoConstraints = false
-        tabBarSuperview.insertSubview(backgroundView, belowSubview: tabBar)
-
-        NSLayoutConstraint.activate([
-            backgroundView.leadingAnchor.constraint(equalTo: tabBar.leadingAnchor),
-            backgroundView.trailingAnchor.constraint(equalTo: tabBar.trailingAnchor),
-            backgroundView.topAnchor.constraint(equalTo: tabBar.topAnchor),
-            backgroundView.bottomAnchor.constraint(equalTo: tabBar.bottomAnchor)
-        ])
-
-        let gradient = GradientProvider.make(style: .primary)
-
-        backgroundView.layer.insertSublayer(gradient, at: 0)
-
-        let overlay = UIView()
-
-        overlay.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.85)
-        overlay.translatesAutoresizingMaskIntoConstraints = false
-
-        tabBar.insertSubview(overlay, at: 0)
-
-        NSLayoutConstraint.activate([
-            overlay.leadingAnchor.constraint(equalTo: tabBar.leadingAnchor),
-            overlay.trailingAnchor.constraint(equalTo: tabBar.trailingAnchor),
-            overlay.topAnchor.constraint(equalTo: tabBar.topAnchor),
-            overlay.bottomAnchor.constraint(equalTo: tabBar.bottomAnchor)
-        ])
-
-        gradientView = backgroundView
-    }
-
-    func addTabBarTopGradientLine() {
-        guard let tabBarSuperview = tabBar.superview else { return }
-
-        let lineView = UIView()
-
-        lineView.translatesAutoresizingMaskIntoConstraints = false
-        tabBarSuperview.addSubview(lineView)
-
-        NSLayoutConstraint.activate([
-            lineView.bottomAnchor.constraint(equalTo: tabBar.topAnchor),
-            lineView.leadingAnchor.constraint(equalTo: tabBar.leadingAnchor),
-            lineView.trailingAnchor.constraint(equalTo: tabBar.trailingAnchor),
-            lineView.heightAnchor.constraint(equalToConstant: 4)
-        ])
-
-        let gradient = GradientProvider.make(style: .tabBarLine)
-
-        lineView.layer.insertSublayer(gradient, at: 0)
-
-        topLineView = lineView
-    }
-
-    func updateTabBarGradientFrames() {
-        if let backgroundView = gradientView,
-           let gradient = backgroundView.layer.sublayers?.first as? CAGradientLayer {
-            gradient.frame = backgroundView.bounds
-        }
-
-        if let lineView = topLineView,
-           let lineGradient = lineView.layer.sublayers?.first as? CAGradientLayer {
-            lineGradient.frame = lineView.bounds
-        }
+        tabBar.standardAppearance = appearance
+        tabBar.scrollEdgeAppearance = appearance
     }
 }

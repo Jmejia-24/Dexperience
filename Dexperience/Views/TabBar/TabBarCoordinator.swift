@@ -29,7 +29,7 @@ final class TabBarCoordinator<R: AppRouter> {
 
         let navigationControllers = TabBarTransition.allCases.compactMap { (transition: TabBarTransition) -> UINavigationController in
             coordinatorRegister[transition] = transition.coordinatorFor(router: router)
-            coordinatorRegister[transition]?.primaryViewController.tabBarItem.image = transition.image
+            coordinatorRegister[transition]?.primaryViewController.tabBarItem = transition.tabBarItem
 
             guard let router = coordinatorRegister[transition] as? any Router,
                   let navigationController = router.navigationController else { fatalError() }
