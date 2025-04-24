@@ -67,4 +67,6 @@ Based on the free design:
 
 ### 📽 Demo (GIF)
 
-👉 [Click here to view the full demo GIF](Demo/demo.gif)
+<p align="center">
+  <img src="Demo/demo.gif" alt="App Demo" width="400"/>
+</p>
