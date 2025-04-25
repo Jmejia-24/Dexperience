@@ -13,7 +13,7 @@ final class MovesViewController<R: MovesRouter>: GenericListViewController<MoveC
         let handler = MovesHandler(viewModel: viewModel)
 
         let registration = UICollectionView.CellRegistration<MoveCellView, PokemonSummary> { cell, _, item in
-            let cellViewModel = MoveCellViewModel(stringUrl: item.url)
+            let cellViewModel = MoveCellViewModel(movePath: item.url?.lastPathComponent)
 
             cell.configure(with: cellViewModel)
         }

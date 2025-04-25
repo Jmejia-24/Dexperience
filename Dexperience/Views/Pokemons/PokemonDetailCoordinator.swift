@@ -12,10 +12,10 @@ final class PokemonDetailCoordinator<R: PokemonsRouter> {
     // MARK: - Properties
 
     private var router: R
-    private var stringUrl: String
+    private var pokemonPath: String
 
     private lazy var pokemonDetailViewModel: PokemonDetailViewModel = {
-        PokemonDetailViewModel(router: router, stringUrl: stringUrl)
+        PokemonDetailViewModel(router: router, pokemonPath: pokemonPath)
     }()
 
     lazy var primaryViewController: UIViewController = {
@@ -24,9 +24,9 @@ final class PokemonDetailCoordinator<R: PokemonsRouter> {
 
     // MARK: - Initializers
 
-    init(router: R, stringUrl: String) {
+    init(router: R, pokemonPath: String) {
         self.router = router
-        self.stringUrl = stringUrl
+        self.pokemonPath = pokemonPath
     }
 }
 

@@ -24,9 +24,9 @@ final class DamageMatrixViewModel {
     }
 
     func loadDamageRelations() async throws {
-        let types = types.compactMap({ URL(string: $0.type?.url ?? "") })
+        let typePaths = types.compactMap({ $0.type?.url?.lastPathComponent })
 
-        data = try await combinedDamageRelations(for: types)
+        data = try await combinedDamageRelations(for: typePaths)
     }
 
     func formatMultiplier(_ value: Double) -> String {
@@ -46,11 +46,11 @@ final class DamageMatrixViewModel {
 
 private extension DamageMatrixViewModel {
 
-    func combinedDamageRelations(for urls: [URL]) async throws -> [PokemonType: Double] {
+    func combinedDamageRelations(for typePaths: [String]) async throws -> [PokemonType: Double] {
         var multipliers = Dictionary(uniqueKeysWithValues: PokemonType.allCases.map { ($0, 1.0) })
 
-        for url in urls {
-            let type = try await api.pokemonType(url: url)
+        for typePath in typePaths {
+            let type = try await api.pokemonType(from: typePath)
             let damage = type.damageRelations
 
             switch mode {

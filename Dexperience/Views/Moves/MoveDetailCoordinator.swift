@@ -12,10 +12,10 @@ final class MoveDetailCoordinator<R: MovesRouter> {
     // MARK: - Properties
 
     private var router: R
-    private var stringUrl: String
+    private var movePath: String
 
     private lazy var moveDetailViewModel: MoveDetailViewModel = {
-        MoveDetailViewModel(router: router, stringUrl: stringUrl)
+        MoveDetailViewModel(router: router, movePath: movePath)
     }()
 
     lazy var primaryViewController: UIViewController = {
@@ -24,9 +24,9 @@ final class MoveDetailCoordinator<R: MovesRouter> {
 
     // MARK: - Initializers
 
-    init(router: R, stringUrl: String) {
+    init(router: R, movePath: String) {
         self.router = router
-        self.stringUrl = stringUrl
+        self.movePath = movePath
     }
 }
 

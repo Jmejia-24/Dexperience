@@ -10,23 +10,23 @@ import UIKit
 final class PokemonPreviewViewModel {
 
     private let api: PokemonsRepository
-    private let pokemonURL: URL
+    private let pokemonPath: String
 
     private(set) var pokemon: Pokemon?
     private(set) var offensiveData: [PokemonType: Double] = [:]
 
     let columns = 3
 
-    init(pokemonURL: URL, api: PokemonsRepository = APIManager()) {
-        self.pokemonURL = pokemonURL
+    init(pokemonPath: String, api: PokemonsRepository = APIManager()) {
+        self.pokemonPath = pokemonPath
         self.api = api
     }
 
     func loadData() async throws {
-        pokemon = try await api.fetchPokemon(url: pokemonURL)
+        pokemon = try await api.fetchPokemon(from: pokemonPath)
 
-        if let pokemonTypesUrls = pokemon?.types?.compactMap({ URL(string: $0.type?.url ?? "") }) {
-            offensiveData = try await combinedDamageRelationsOffensive(for: pokemonTypesUrls)
+        if let pokemonTypePaths = pokemon?.types?.compactMap({ $0.type?.url?.lastPathComponent }) {
+            offensiveData = try await combinedDamageRelationsOffensive(for: pokemonTypePaths)
         }
     }
 
@@ -47,11 +47,11 @@ final class PokemonPreviewViewModel {
 
 private extension PokemonPreviewViewModel {
 
-    func combinedDamageRelationsOffensive(for pokemonTypesUrls: [URL]) async throws -> [PokemonType: Double] {
+    func combinedDamageRelationsOffensive(for pokemonTypePaths: [String]) async throws -> [PokemonType: Double] {
         var offensiveMultipliers = Dictionary(uniqueKeysWithValues: PokemonType.allCases.map { ($0, 1.0) })
 
-        for url in pokemonTypesUrls {
-            let typeResponse = try await api.pokemonType(url: url)
+        for pokemonTypePath in pokemonTypePaths {
+            let typeResponse = try await api.pokemonType(from: pokemonTypePath)
             let damage = typeResponse.damageRelations
 
             updateMultipliers(from: damage.doubleDamageTo, multiplier: 2.0, in: &offensiveMultipliers)

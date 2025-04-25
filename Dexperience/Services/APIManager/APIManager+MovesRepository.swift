@@ -26,8 +26,11 @@ extension APIManager: MovesRepository {
         return try await execute(request)
     }
 
-    func fetchMove(url: URL) async throws -> Move {
-        let request = Request(with: url)
+    func fetchMove(from path: String) async throws -> Move {
+       let request = Request(
+            endpoint: .move,
+            pathComponents: [path]
+        )
 
         return try await execute(request)
     }

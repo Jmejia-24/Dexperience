@@ -35,10 +35,9 @@ final class ItemDetailViewModel<R: ItemsRouter> {
 
     @MainActor
     func fetchDetails() async throws {
-        guard let itemURL,
-              let url = URL(string: itemURL) else { return }
+        guard let itemPath = itemURL?.lastPathComponent else { return }
 
-        let itemResponse = try await api.fetchItem(url: url)
+        let itemResponse = try await api.fetchItem(from: itemPath)
 
         item = itemResponse
         infoList = itemResponse.effectEntries?.compactMap { $0.effect } ?? []

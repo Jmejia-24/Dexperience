@@ -44,12 +44,12 @@ final class PokemonsHandler<R: PokemonsRouter>: GenericListHandler {
     }
 
     func contextMenu(for indexPath: IndexPath, item: Model) -> UIContextMenuConfiguration? {
-        guard let url = URL(string: item.url ?? "") else { return nil }
+        guard let pokemonPath = item.url?.lastPathComponent else { return nil }
 
         return UIContextMenuConfiguration(
             identifier: indexPath as NSCopying,
             previewProvider: {
-                let pokemonPreviewViewModel = PokemonPreviewViewModel(pokemonURL: url)
+                let pokemonPreviewViewModel = PokemonPreviewViewModel(pokemonPath: pokemonPath)
 
                 return PokemonPreview(viewModel: pokemonPreviewViewModel)
             },

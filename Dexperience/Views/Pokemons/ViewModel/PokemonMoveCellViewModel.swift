@@ -24,10 +24,9 @@ final class PokemonMoveCellViewModel {
     }
 
     func fetchDetails() async {
-        guard let moveURL = pokemonMove.move?.url,
-              let url = URL(string: moveURL) else { return }
+        guard let movePath = pokemonMove.move?.url?.lastPathComponent else { return }
 
-        let move = try? await api.fetchMove(url: url)
+        let move = try? await api.fetchMove(from: movePath)
 
         type = PokemonType(rawValue: move?.type?.name ?? "")
     }

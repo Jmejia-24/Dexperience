@@ -22,9 +22,8 @@ final class ItemCellViewModel {
     }
 
     func fetchDetails() async throws -> Item? {
-        guard let itemURL,
-              let url = URL(string: itemURL) else { return nil }
+        guard let itemPath = itemURL?.lastPathComponent else { return nil }
 
-        return try await api.fetchItem(url: url)
+        return try await api.fetchItem(from: itemPath)
     }
 }

@@ -10,5 +10,5 @@ import Foundation
 protocol ItemsRepository {
 
     func fetchItemList(from url: URL?) async throws -> PokemonListResponse
-    func fetchItem(url: URL) async throws -> Item
+    func fetchItem(from path: String) async throws -> Item
 }

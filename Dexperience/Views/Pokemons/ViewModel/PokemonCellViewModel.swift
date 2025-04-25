@@ -12,19 +12,18 @@ final class PokemonCellViewModel {
     // MARK: - Properties
 
     private let api: PokemonsRepository
-    private let pokemonURL: String?
+    private let pokemonPath: String?
 
     // MARK: - Initializer
 
-    init(stringUrl: String?, api: PokemonsRepository = APIManager()) {
-        self.pokemonURL = stringUrl
+    init(pokemonPath: String?, api: PokemonsRepository = APIManager()) {
+        self.pokemonPath = pokemonPath
         self.api = api
     }
 
     func fetchDetails() async throws -> Pokemon? {
-        guard let pokemonURL,
-              let url = URL(string: pokemonURL) else { return nil }
+        guard let pokemonPath else { return nil }
 
-        return try await api.fetchPokemon(url: url)
+        return try await api.fetchPokemon(from: pokemonPath)
     }
 }

@@ -26,43 +26,47 @@ extension APIManager: PokemonsRepository {
         return try await execute(request)
     }
 
-    func fetchPokemon(url: URL) async throws -> Pokemon {
-        let request = Request(with: url)
-
-        return try await execute(request)
-    }
-
-    func pokemonType(url: URL) async throws -> TypeResponse {
-        let request = Request(with: url)
-
-        return try await execute(request)
-    }
-
-    func fetchSpecie(url: URL) async throws -> Specie {
-        let request = Request(with: url)
-
-        return try await execute(request)
-    }
-
-    func fetchEvolutionChain(url: URL) async throws -> EvolutionChainResponse {
-        let request = Request(with: url)
-
-        return try await execute(request)
-    }
-
-    func fetchPokemon(from name: String) async throws -> Pokemon {
+    func pokemonType(from path: String) async throws -> TypeResponse {
         let request = Request(
-            endpoint: .pokemon,
-            pathComponents: [
-                name
-            ],
+            endpoint: .type,
+            pathComponents: [path]
         )
 
         return try await execute(request)
     }
 
-    func fetchAbility(url: URL) async throws -> Ability {
-        let request = Request(with: url)
+    func fetchSpecie(from path: String) async throws -> Specie {
+        let request = Request(
+            endpoint: .pokemonSpecies,
+            pathComponents: [path]
+        )
+
+        return try await execute(request)
+    }
+
+    func fetchEvolutionChain(from path: String) async throws -> EvolutionChainResponse {
+        let request = Request(
+            endpoint: .evolutionChain,
+            pathComponents: [path]
+        )
+
+        return try await execute(request)
+    }
+
+    func fetchPokemon(from path: String) async throws -> Pokemon {
+        let request = Request(
+            endpoint: .pokemon,
+            pathComponents: [path]
+        )
+
+        return try await execute(request)
+    }
+
+    func fetchAbility(from path: String) async throws -> Ability {
+        let request = Request(
+            endpoint: .ability,
+            pathComponents: [path]
+        )
 
         return try await execute(request)
     }

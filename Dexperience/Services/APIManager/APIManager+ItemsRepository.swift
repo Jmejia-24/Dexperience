@@ -26,8 +26,11 @@ extension APIManager: ItemsRepository {
         return try await execute(request)
     }
 
-    func fetchItem(url: URL) async throws -> Item {
-        let request = Request(with: url)
+    func fetchItem(from path: String) async throws -> Item {
+        let request = Request(
+            endpoint: .item,
+            pathComponents: [path]
+        )
 
         return try await execute(request)
     }

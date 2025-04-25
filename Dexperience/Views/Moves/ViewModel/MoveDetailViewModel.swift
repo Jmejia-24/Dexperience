@@ -13,7 +13,7 @@ final class MoveDetailViewModel<R: MovesRouter> {
 
     private let router: R
     private let api: MovesRepository
-    private let moveURL: String?
+    private let movePath: String?
 
     let containerTopConstraintConstant: CGFloat = 58
     let headerTopConstraintConstant: CGFloat = 30
@@ -26,20 +26,19 @@ final class MoveDetailViewModel<R: MovesRouter> {
 
     // MARK: - Initializers
 
-    init(router: R, api: MovesRepository = APIManager(), stringUrl: String?) {
+    init(router: R, api: MovesRepository = APIManager(), movePath: String?) {
         self.router = router
         self.api = api
-        self.moveURL = stringUrl
+        self.movePath = movePath
     }
 
     // MARK: - Data Fetching
 
     @MainActor
     func fetchDetails() async throws {
-        guard let moveURL,
-              let url = URL(string: moveURL) else { return }
+        guard let movePath else { return }
 
-        let moveResponse = try await api.fetchMove(url: url)
+        let moveResponse = try await api.fetchMove(from: movePath)
 
         move = moveResponse
 

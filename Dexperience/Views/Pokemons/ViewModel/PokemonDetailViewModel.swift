@@ -13,7 +13,7 @@ final class PokemonDetailViewModel<R: PokemonsRouter> {
 
     private let router: R
     private let api: PokemonsRepository
-    private let pokemonURL: String?
+    private let pokemonPath: String?
 
     let containerTopConstraintConstant: CGFloat = 140
     let headerTopConstraintConstant: CGFloat = 30
@@ -31,20 +31,19 @@ final class PokemonDetailViewModel<R: PokemonsRouter> {
 
     // MARK: - Initializers
 
-    init(router: R, api: PokemonsRepository = APIManager(), stringUrl: String?) {
+    init(router: R, api: PokemonsRepository = APIManager(), pokemonPath: String?) {
         self.router = router
         self.api = api
-        self.pokemonURL = stringUrl
+        self.pokemonPath = pokemonPath
     }
 
     // MARK: - Data Fetching
 
     @MainActor
     func fetchDetails() async throws {
-        guard let pokemonURL,
-              let url = URL(string: pokemonURL) else { return }
+        guard let pokemonPath else { return }
 
-        let pokemonResponse = try await api.fetchPokemon(url: url)
+        let pokemonResponse = try await api.fetchPokemon(from: pokemonPath)
 
         pokemon = pokemonResponse
 
@@ -58,10 +57,9 @@ final class PokemonDetailViewModel<R: PokemonsRouter> {
 
     @MainActor
     func fetchSpecie() async throws {
-        guard let specieURL = pokemon?.species?.url,
-              let url = URL(string: specieURL) else { return }
+        guard let speciePath = pokemon?.species?.url?.lastPathComponent else { return }
 
-        let specieResponse = try await api.fetchSpecie(url: url)
+        let specieResponse = try await api.fetchSpecie(from: speciePath)
 
         flavorText = specieResponse.flavorTextEntries?
             .first(where: {
@@ -72,9 +70,8 @@ final class PokemonDetailViewModel<R: PokemonsRouter> {
         breedingInfo = extractBreedingInfo(from: specieResponse)
         captureInfo = extractCaptureInfo(from: specieResponse)
 
-        if let evolutionURLString = specieResponse.evolutionChain?.url,
-           let evolutionURL = URL(string: evolutionURLString) {
-            let evolutionChainResponse = try await api.fetchEvolutionChain(url: evolutionURL)
+        if let evolutionPath = specieResponse.evolutionChain?.url?.lastPathComponent {
+            let evolutionChainResponse = try await api.fetchEvolutionChain(from: evolutionPath)
 
             var parsedEvolutions: [Evolution] = []
             await parseEvolutions(from: evolutionChainResponse.chain, evolutions: &parsedEvolutions)
@@ -139,9 +136,8 @@ private extension PokemonDetailViewModel {
             guard
                 let fromPoke = try? await fromPokemon,
                 let toPoke = try? await toPokemon,
-                let toSpeciesURLString = toPoke.species?.url,
-                let toSpeciesURL = URL(string: toSpeciesURLString),
-                let toSpecies = try? await api.fetchSpecie(url: toSpeciesURL)
+                let toSpeciesPath = toPoke.species?.url?.lastPathComponent,
+                let toSpecies = try? await api.fetchSpecie(from: toSpeciesPath)
             else { continue }
 
             evolutions.append(
@@ -160,9 +156,7 @@ private extension PokemonDetailViewModel {
             for variant in variants {
                 guard
                     let variantName = variant.pokemon?.name,
-                    let variantURLString = variant.pokemon?.url,
-                    let variantURL = URL(string: variantURLString),
-                    let variantPokemon = try? await api.fetchPokemon(url: variantURL)
+                    let variantPokemon = try? await api.fetchPokemon(from: variantName)
                 else { continue }
 
                 evolutions.append(

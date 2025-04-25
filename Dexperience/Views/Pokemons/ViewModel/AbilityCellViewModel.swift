@@ -26,10 +26,9 @@ final class AbilityCellViewModel {
     }
 
     func loadAbilityDescription() async throws -> String? {
-        guard let urlString = entry.ability?.url,
-              let url = URL(string: urlString) else { return nil }
+        guard let abilityPath = entry.ability?.url?.lastPathComponent else { return nil }
 
-        let ability = try await api.fetchAbility(url: url)
+        let ability = try await api.fetchAbility(from: abilityPath)
 
         return ability.effectEntries?.first(where: { $0.language?.name == .en })?.shortEffect ?? ""
     }
