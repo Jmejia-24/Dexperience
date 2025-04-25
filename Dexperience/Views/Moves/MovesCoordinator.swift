@@ -72,3 +72,17 @@ extension MovesCoordinator: MovesRouter {
 
     func exit() { }
 }
+
+// MARK: - DeepLink
+
+extension MovesCoordinator: DeepLinkHandleable {
+
+    func handle(deepLink: DeepLink) {
+        switch deepLink {
+        case .moveDetail(let id):
+            process(route: .moveDetail(id))
+        default:
+            break
+        }
+    }
+}

@@ -242,7 +242,9 @@ private extension ItemDetailViewController {
                     }
                 }
             } catch {
-                presentAlert(type: .error, message: error.localizedDescription)
+                presentAlert(type: .error, message: error.localizedDescription, onPrimary: { [weak self] in
+                    self?.dismiss(animated: true)
+                })
             }
         }
     }

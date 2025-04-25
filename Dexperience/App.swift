@@ -11,8 +11,20 @@ final class App {
 
     // MARK: - Properties
 
+    private let parser = DeepLinkParser()
+    private lazy var navigator: DeepLinkNavigator<App> = .init(router: self)
+
     var navigationController: AppNavigationController? = .init()
     var primaryViewController: UIViewController { .init() }
+}
+
+private extension App {
+
+    func registerForPushNotifications() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in }
+
+        UIApplication.shared.registerForRemoteNotifications()
+    }
 }
 
 // MARK: - Coordinator
@@ -20,6 +32,8 @@ final class App {
 extension App: Coordinator {
 
     func start() {
+        registerForPushNotifications()
+
         process(route: .showTabBar)
     }
 }
@@ -49,5 +63,16 @@ extension App: AppRouter {
 
     func exit() {
         navigationController?.popToRootViewController(animated: true)
+    }
+}
+
+// MARK: - DeepLink
+
+extension App {
+    
+    func handleDeepLink(_ url: URL) {
+        guard let deepLink = parser.parse(url: url) else { return }
+
+        navigator.resolveAndNavigate(deepLink)
     }
 }

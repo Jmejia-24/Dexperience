@@ -37,6 +37,6 @@ extension ItemDetailCoordinator: Coordinator {
     func start() {
         primaryViewController.modalPresentationStyle = .fullScreen
 
-        router.navigationController?.present(primaryViewController, animated: true)
+        safePresent(from: router.navigationController, viewController: primaryViewController)
     }
 }

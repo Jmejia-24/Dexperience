@@ -24,6 +24,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		91415A612DBB1862000CE42E /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		91930CB22DA0F66B007A2B8D /* Dexperience.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dexperience.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		91930CC82DA0F66D007A2B8D /* DexperienceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DexperienceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		91930CD22DA0F66D007A2B8D /* DexperienceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DexperienceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -85,12 +86,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		91415A602DBB1861000CE42E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				91415A612DBB1862000CE42E /* UserNotifications.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		91930CA92DA0F66B007A2B8D = {
 			isa = PBXGroup;
 			children = (
 				91930CB42DA0F66B007A2B8D /* Dexperience */,
 				91930CCB2DA0F66D007A2B8D /* DexperienceTests */,
 				91930CD52DA0F66D007A2B8D /* DexperienceUITests */,
+				91415A602DBB1861000CE42E /* Frameworks */,
 				91930CB32DA0F66B007A2B8D /* Products */,
 			);
 			sourceTree = "<group>";

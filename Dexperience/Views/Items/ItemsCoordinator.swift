@@ -75,3 +75,17 @@ extension ItemsCoordinator: ItemsRouter {
 
     }
 }
+
+// MARK: - DeepLink
+
+extension ItemsCoordinator: DeepLinkHandleable {
+
+    func handle(deepLink: DeepLink) {
+        switch deepLink {
+        case .itemDetail(let id):
+            process(route: .itemDetail(id))
+        default:
+            break
+        }
+    }
+}

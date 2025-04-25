@@ -70,3 +70,17 @@ extension PokemonsCoordinator: PokemonsRouter {
 
     func exit() { }
 }
+
+// MARK: - DeepLink
+
+extension PokemonsCoordinator: DeepLinkHandleable {
+
+    func handle(deepLink: DeepLink) {
+        switch deepLink {
+        case .pokemonDetail(let id):
+            process(route: .pokemonDetail(id))
+        default:
+            break
+        }
+    }
+}

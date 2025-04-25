@@ -9,9 +9,7 @@ final class TabBarViewModel<R: TabBarRouter> {
 
     // MARK: - Properties
 
-    private let router: R
-
-    var tabBarGradientApplied = false
+    let router: R
 
     // MARK: - Initializers
 

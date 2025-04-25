@@ -23,6 +23,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
 
         app.start()
+
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            appDelegate.app = app
+        }
+
+        if let url = connectionOptions.urlContexts.first?.url {
+            app.handleDeepLink(url)
+        }
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -53,5 +61,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let url = URLContexts.first?.url else { return }
 
+        app.handleDeepLink(url)
+    }
 }

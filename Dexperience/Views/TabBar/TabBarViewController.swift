@@ -11,7 +11,7 @@ final class TabBarViewController<R: TabBarRouter>: UITabBarController {
 
     // MARK: - Properties
 
-    private let viewModel: TabBarViewModel<R>
+    let viewModel: TabBarViewModel<R>
 
     // MARK: - Initializers
 

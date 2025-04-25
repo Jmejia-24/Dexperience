@@ -11,7 +11,7 @@ final class TabBarCoordinator<R: AppRouter> {
 
     // MARK: - Properties
 
-    private var coordinatorRegister: [TabBarTransition: Coordinator] = [:]
+    private(set) var coordinatorRegister: [TabBarTransition: Coordinator] = [:]
 
     var navigationController: AppNavigationController? {
         get { router.navigationController }
@@ -56,7 +56,7 @@ extension TabBarCoordinator: Coordinator {
     func start() {
         navigationController?.setNavigationBarHidden(true, animated: false)
 
-        navigationController?.pushViewController(primaryViewController, animated: true)
+        navigationController?.setViewControllers([primaryViewController], animated: false)
     }
 }
 
