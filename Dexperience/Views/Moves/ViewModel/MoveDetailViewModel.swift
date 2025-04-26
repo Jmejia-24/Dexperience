@@ -24,6 +24,12 @@ final class MoveDetailViewModel<R: MovesRouter> {
     var moveType: PokemonType?
     var infoList = [String]()
 
+    var moveDeepLink: URL? {
+        guard let movePath else { return nil }
+
+        return URL(string: "dexperience://tab/moves/\(movePath)")
+    }
+
     // MARK: - Initializers
 
     init(router: R, api: MovesRepository = APIManager(), movePath: String?) {

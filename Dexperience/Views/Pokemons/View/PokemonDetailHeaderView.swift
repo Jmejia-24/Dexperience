@@ -91,6 +91,10 @@ final class PokemonDetailHeaderView: UIView {
         pokemonImageView.frame.height + mainStackView.frame.height
     }
 
+    var pokemonImage: UIImage? {
+        pokemonImageView.image
+    }
+
     override init(frame: CGRect) {
         super.init(frame: .zero)
 

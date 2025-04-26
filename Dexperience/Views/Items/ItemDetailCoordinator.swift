@@ -12,10 +12,10 @@ final class ItemDetailCoordinator<R: ItemsRouter> {
     // MARK: - Properties
 
     private var router: R
-    private var stringUrl: String
+    private var itemPath: String
 
     private lazy var itemDetailViewModel: ItemDetailViewModel = {
-        ItemDetailViewModel(router: router, stringUrl: stringUrl)
+        ItemDetailViewModel(router: router, itemPath: itemPath)
     }()
 
     lazy var primaryViewController: UIViewController = {
@@ -24,9 +24,9 @@ final class ItemDetailCoordinator<R: ItemsRouter> {
 
     // MARK: - Initializers
 
-    init(router: R, stringUrl: String) {
+    init(router: R, itemPath: String) {
         self.router = router
-        self.stringUrl = stringUrl
+        self.itemPath = itemPath
     }
 }
 

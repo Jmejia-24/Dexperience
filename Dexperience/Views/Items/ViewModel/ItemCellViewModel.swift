@@ -12,17 +12,17 @@ final class ItemCellViewModel {
     // MARK: - Properties
 
     private let api: ItemsRepository
-    private let itemURL: String?
+    private let itemPath: String?
 
     // MARK: - Initializer
 
-    init(stringUrl: String?, api: ItemsRepository = APIManager()) {
-        self.itemURL = stringUrl
+    init(itemPath: String?, api: ItemsRepository = APIManager()) {
+        self.itemPath = itemPath
         self.api = api
     }
 
     func fetchDetails() async throws -> Item? {
-        guard let itemPath = itemURL?.lastPathComponent else { return nil }
+        guard let itemPath else { return nil }
 
         return try await api.fetchItem(from: itemPath)
     }

@@ -15,8 +15,8 @@ enum ItemsTransition {
 
     func coordinatorFor<R: ItemsRouter>(router: R) -> Coordinator {
         return switch self {
-        case .itemDetail(let stringUrl):
-            ItemDetailCoordinator(router: router, stringUrl: stringUrl)
+        case .itemDetail(let path):
+            ItemDetailCoordinator(router: router, itemPath: path)
         }
     }
 }

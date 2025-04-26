@@ -59,6 +59,10 @@ final class MoveDetailHeaderView: UIView {
         typeImageView.frame.height + mainStackView.frame.height
     }
 
+    var typeImage: UIImage? {
+        typeImageView.image
+    }
+
     override init(frame: CGRect) {
         super.init(frame: .zero)
         layout()

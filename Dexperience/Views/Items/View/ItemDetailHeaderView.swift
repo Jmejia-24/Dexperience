@@ -84,6 +84,10 @@ final class ItemDetailHeaderView: UIView {
         imageView.frame.height + mainStackView.frame.height
     }
 
+    var itemImage: UIImage? {
+        imageView.image
+    }
+
     override init(frame: CGRect) {
         super.init(frame: .zero)
         layout()

@@ -29,6 +29,12 @@ final class PokemonDetailViewModel<R: PokemonsRouter> {
     var breedingInfo: BreedingInfo?
     var captureInfo: CaptureInfo?
 
+    var pokemonDeepLink: URL? {
+        guard let pokemonPath else { return nil }
+
+        return URL(string: "dexperience://tab/pokemons/\(pokemonPath)")
+    }
+
     // MARK: - Initializers
 
     init(router: R, api: PokemonsRepository = APIManager(), pokemonPath: String?) {

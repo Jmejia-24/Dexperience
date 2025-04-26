@@ -13,7 +13,7 @@ final class ItemsViewController<R: ItemsRouter>: GenericListViewController<ItemC
         let handler = ItemsHandler(viewModel: viewModel)
 
         let registration = UICollectionView.CellRegistration<ItemCellView, PokemonSummary> { cell, _, item in
-            let cellViewModel = ItemCellViewModel(stringUrl: item.url)
+            let cellViewModel = ItemCellViewModel(itemPath: item.url?.lastPathComponent)
 
             cell.configure(with: cellViewModel)
         }

@@ -67,6 +67,21 @@ final class MoveDetailViewController<R: MovesRouter>: UIViewController, UICollec
         return button
     }()
 
+    private lazy var shareButton: UIButton = {
+        let button = UIButton(type: .system)
+
+        button.setImage(UIImage(systemName: "square.and.arrow.up.circle.fill"), for: .normal)
+        button.tintColor = .white
+
+        button.translatesAutoresizingMaskIntoConstraints = false
+
+        button.addAction(UIAction(handler: { [weak self] _ in
+            self?.shareMove()
+        }), for: .touchUpInside)
+
+        return button
+    }()
+
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
             var config = UICollectionLayoutListConfiguration(appearance: .plain)
@@ -180,12 +195,18 @@ private extension MoveDetailViewController {
     func setupNavigation() {
         view.addSubview(navigationTitleLabel)
         view.addSubview(backButton)
+        view.addSubview(shareButton)
 
         NSLayoutConstraint.activate([
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
             backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             backButton.widthAnchor.constraint(equalToConstant: 24),
             backButton.heightAnchor.constraint(equalToConstant: 24),
+
+            shareButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            shareButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            shareButton.widthAnchor.constraint(equalToConstant: 24),
+            shareButton.heightAnchor.constraint(equalToConstant: 24),
 
             navigationTitleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
             navigationTitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
@@ -304,5 +325,20 @@ private extension MoveDetailViewController {
 
             view.layoutIfNeeded()
         }
+    }
+
+    func shareMove() {
+        guard let image = headerView.typeImage,
+              let deepLink = viewModel.moveDeepLink else { return }
+
+        let item = DynamicShareItem(
+            title: "Check out this move on Dexperience! 🧢",
+            url: deepLink,
+            image: image
+        )
+
+        let controller = UIActivityViewController(activityItems: [item], applicationActivities: nil)
+
+        safePresent(from: self, viewController: controller)
     }
 }
