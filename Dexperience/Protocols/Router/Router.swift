@@ -11,7 +11,7 @@ protocol Router {
 
     associatedtype Route
 
-    var navigationController: AppNavigationController? { get set }
+    var navigationController: UINavigationController? { get set }
 
     func process(route: Route)
     func exit()

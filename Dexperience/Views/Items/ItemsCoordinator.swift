@@ -12,7 +12,7 @@ final class ItemsCoordinator<R: AppRouter> {
     // MARK: - Properties
 
     private var router: R
-    private var settingsNavigationController: AppNavigationController!
+    private var settingsNavigationController: UINavigationController!
 
     private lazy var itemsViewModel: ItemsViewModel = {
         ItemsViewModel(router: self)
@@ -22,7 +22,7 @@ final class ItemsCoordinator<R: AppRouter> {
     lazy var primaryViewController: UIViewController = {
         let viewController = ItemsViewController(viewModel: itemsViewModel)
 
-        settingsNavigationController = AppNavigationController(rootViewController: viewController)
+        settingsNavigationController = UINavigationController(rootViewController: viewController)
 
         return viewController
     }()
@@ -47,7 +47,7 @@ extension ItemsCoordinator: Coordinator {
 
 extension ItemsCoordinator: ItemsRouter {
 
-    var navigationController: AppNavigationController? {
+    var navigationController: UINavigationController? {
         get { settingsNavigationController }
         set { }
     }

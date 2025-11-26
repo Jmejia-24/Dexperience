@@ -13,7 +13,7 @@ final class TabBarCoordinator<R: AppRouter> {
 
     private(set) var coordinatorRegister: [TabBarTransition: Coordinator] = [:]
 
-    var navigationController: AppNavigationController? {
+    var navigationController: UINavigationController? {
         get { router.navigationController }
         set { router.navigationController = newValue }
     }

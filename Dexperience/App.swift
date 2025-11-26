@@ -14,7 +14,7 @@ final class App {
     private let parser = DeepLinkParser()
     private lazy var navigator: DeepLinkNavigator<App> = .init(router: self)
 
-    var navigationController: AppNavigationController? = .init()
+    var navigationController: UINavigationController? = .init()
     var primaryViewController: UIViewController { .init() }
 }
 

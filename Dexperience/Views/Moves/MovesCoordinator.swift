@@ -12,7 +12,7 @@ final class MovesCoordinator<R: AppRouter> {
     // MARK: - Properties
 
     private var router: R
-    private var movesNavigationController: AppNavigationController?
+    private var movesNavigationController: UINavigationController?
 
     private lazy var movesViewModel: MovesViewModel = {
         MovesViewModel(router: self)
@@ -21,7 +21,7 @@ final class MovesCoordinator<R: AppRouter> {
     lazy var primaryViewController: UIViewController = {
         let viewController = MovesViewController(viewModel: movesViewModel)
 
-        movesNavigationController = AppNavigationController(rootViewController: viewController)
+        movesNavigationController = UINavigationController(rootViewController: viewController)
 
         return viewController
     }()
@@ -46,7 +46,7 @@ extension MovesCoordinator: Coordinator {
 
 extension MovesCoordinator: MovesRouter {
 
-    var navigationController: AppNavigationController? {
+    var navigationController: UINavigationController? {
         get { movesNavigationController }
         set { }
     }

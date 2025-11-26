@@ -21,8 +21,6 @@ class GenericListViewController<Cell: UICollectionViewCell, Handler: GenericList
     private let handler: Handler
     private let cellRegistration: UICollectionView.CellRegistration<Cell, Model>
 
-    private lazy var backgroundGradientLayer = GradientProvider.make(style: .primary)
-
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: makeListLayout())
 
@@ -49,8 +47,8 @@ class GenericListViewController<Cell: UICollectionViewCell, Handler: GenericList
         let controller = UISearchController(searchResultsController: nil)
 
         controller.searchResultsUpdater = self
-        controller.obscuresBackgroundDuringPresentation = false
         controller.searchBar.placeholder = "Search"
+        controller.automaticallyShowsCancelButton = true
 
         return controller
     }()
@@ -66,16 +64,10 @@ class GenericListViewController<Cell: UICollectionViewCell, Handler: GenericList
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        backgroundGradientLayer.frame = view.bounds
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         title = handler.title
-        view.layer.insertSublayer(backgroundGradientLayer, at: 0)
-        
+
         fetchInitial()
     }
 
@@ -123,15 +115,17 @@ private extension GenericListViewController {
 
     func setupUI() {
         navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
+
+        navigationItem.searchBarPlacementAllowsToolbarIntegration = true
+        navigationItem.preferredSearchBarPlacement = .integratedButton
 
         view.addSubview(collectionView)
 
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 4),
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -4),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
 

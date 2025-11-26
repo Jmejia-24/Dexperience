@@ -28,6 +28,8 @@ final class TabBarViewController<R: TabBarRouter>: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        tabBarMinimizeBehavior = .onScrollDown
+
         configureAppearance()
     }
 
@@ -43,10 +45,7 @@ private extension TabBarViewController {
     func configureAppearance() {
         let appearance = UITabBarAppearance()
 
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundEffect = .init(style: .prominent)
-        appearance.shadowColor = .clear
-        appearance.shadowImage = nil
+        appearance.configureWithDefaultBackground()
 
         appearance.applyItemColors(
             normalTitleColor: .secondaryLabel,
