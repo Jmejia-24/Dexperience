@@ -5,7 +5,8 @@
 //  Created by Byron on 4/16/25.
 //
 
-enum PokemonStatType: String, CaseIterable, Codable {
+nonisolated
+enum PokemonStatType: String, CaseIterable, Codable, Sendable {
 
     case hp = "hp"
     case attack = "attack"

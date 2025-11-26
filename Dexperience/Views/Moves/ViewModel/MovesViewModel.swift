@@ -25,7 +25,6 @@ final class MovesViewModel<R: MovesRouter> {
         self.api = api
     }
 
-    @MainActor
     func getMoveList() async throws {
         let response = try await api.fetchMoveList(from: nil)
 
@@ -33,7 +32,6 @@ final class MovesViewModel<R: MovesRouter> {
         moveList = response.results
     }
 
-    @MainActor
     func fetchMoreMoves() async throws {
         guard !isFetchingMore,
               let nextUrlString = moveListResponse?.next,

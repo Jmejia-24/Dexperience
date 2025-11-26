@@ -7,7 +7,6 @@
 
 import UIKit
 
-@MainActor
 final class LoaderView: UIView {
 
     static let shared = LoaderView()

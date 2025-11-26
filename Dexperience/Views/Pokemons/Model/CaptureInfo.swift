@@ -5,7 +5,8 @@
 //  Created by Byron on 4/17/25.
 //
 
-struct CaptureInfo: Hashable {
+nonisolated
+struct CaptureInfo: Hashable, Sendable {
 
     let habitat: String?
     let generation: String?

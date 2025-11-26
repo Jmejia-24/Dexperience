@@ -39,7 +39,6 @@ final class ItemDetailViewModel<R: ItemsRouter> {
 
     // MARK: - Data Fetching
 
-    @MainActor
     func fetchDetails() async throws {
         guard let itemPath else { return }
 

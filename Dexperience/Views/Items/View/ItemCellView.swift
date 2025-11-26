@@ -78,7 +78,9 @@ final class ItemCellView: UICollectionViewCell {
     // MARK: - Configuration
 
     func configure(with viewModel: ItemCellViewModel) {
-        Task { @MainActor in
+        Task { [weak self] in
+            guard let self else { return }
+
             let item = try? await viewModel.fetchDetails()
 
             updateUI(with: item)

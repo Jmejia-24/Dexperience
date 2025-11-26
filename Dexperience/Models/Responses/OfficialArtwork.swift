@@ -5,7 +5,8 @@
 //  Created by Byron on 4/7/25.
 //
 
-struct OfficialArtwork: Codable, Hashable {
+nonisolated
+struct OfficialArtwork: Codable, Hashable, Sendable {
 
     let frontDefault: String?
     let frontShiny: String?

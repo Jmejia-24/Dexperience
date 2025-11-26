@@ -9,11 +9,13 @@ import UIKit
 
 final class MoveDetailViewController<R: MovesRouter>: UIViewController, UICollectionViewDelegate,  UIScrollViewDelegate {
 
+    nonisolated
     private enum Section: CaseIterable {
         case infoList
         case stats
     }
 
+    nonisolated
     private enum MoveItem: Hashable {
         case info(String)
         case stat(Move)

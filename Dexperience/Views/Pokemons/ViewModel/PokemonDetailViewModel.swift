@@ -45,7 +45,6 @@ final class PokemonDetailViewModel<R: PokemonsRouter> {
 
     // MARK: - Data Fetching
 
-    @MainActor
     func fetchDetails() async throws {
         guard let pokemonPath else { return }
 
@@ -61,7 +60,6 @@ final class PokemonDetailViewModel<R: PokemonsRouter> {
         statDisplays = extractStats(from: pokemonResponse.stats)
     }
 
-    @MainActor
     func fetchSpecie() async throws {
         guard let speciePath = pokemon?.species?.url?.lastPathComponent else { return }
 
@@ -127,7 +125,6 @@ private extension PokemonDetailViewModel {
             .sorted { $0.level < $1.level }
     }
 
-    @MainActor
     func parseEvolutions(from chain: EvolutionChain?, evolutions: inout [Evolution]) async {
         guard let fromName = chain?.species?.name else { return }
 
@@ -136,12 +133,9 @@ private extension PokemonDetailViewModel {
 
             let detail = evolution.evolutionDetails?.first
 
-            async let fromPokemon = api.fetchPokemon(from: fromName)
-            async let toPokemon = api.fetchPokemon(from: toName)
-
             guard
-                let fromPoke = try? await fromPokemon,
-                let toPoke = try? await toPokemon,
+                let fromPoke = try? await api.fetchPokemon(from: fromName),
+                let toPoke = try? await api.fetchPokemon(from: toName),
                 let toSpeciesPath = toPoke.species?.url?.lastPathComponent,
                 let toSpecies = try? await api.fetchSpecie(from: toSpeciesPath)
             else { continue }

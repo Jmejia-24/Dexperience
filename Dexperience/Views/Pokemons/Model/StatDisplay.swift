@@ -5,7 +5,8 @@
 //  Created by Byron on 4/16/25.
 //
 
-struct StatDisplay: Hashable {
+nonisolated
+struct StatDisplay: Hashable, Sendable {
 
     let value: Int
     let type: PokemonStatType

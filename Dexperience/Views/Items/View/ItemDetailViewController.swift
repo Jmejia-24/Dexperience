@@ -9,6 +9,7 @@ import UIKit
 
 final class ItemDetailViewController<R: ItemsRouter>: UIViewController, UICollectionViewDelegate,  UIScrollViewDelegate {
 
+    nonisolated
     private enum Section: CaseIterable {
         case main
     }

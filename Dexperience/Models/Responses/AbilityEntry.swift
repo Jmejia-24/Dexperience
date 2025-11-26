@@ -5,7 +5,8 @@
 //  Created by Byron on 4/17/25.
 //
 
-struct AbilityEntry: Codable, Hashable {
+nonisolated
+struct AbilityEntry: Codable, Hashable, Sendable {
 
     let ability: PokemonSummary?
     let isHidden: Bool?

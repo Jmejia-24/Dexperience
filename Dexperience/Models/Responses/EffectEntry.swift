@@ -5,7 +5,7 @@
 //  Created by Byron on 4/11/25.
 //
 
-struct EffectEntry: Codable, Hashable {
+struct EffectEntry: Codable, Hashable, Sendable {
 
     let effect: String?
     let shortEffect: String?

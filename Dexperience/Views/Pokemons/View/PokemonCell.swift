@@ -28,7 +28,9 @@ final class PokemonCellView: UICollectionViewCell {
     // MARK: - Configuration
 
     func configure(with viewModel: PokemonCellViewModel) {
-        Task { @MainActor in
+        Task { [weak self] in
+            guard let self else { return }
+
             let pokemon = try? await viewModel.fetchDetails()
 
             cardView.configure(with: pokemon)

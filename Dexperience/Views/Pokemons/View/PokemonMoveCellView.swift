@@ -64,7 +64,9 @@ final class PokemonMoveCellView: UICollectionViewCell {
     // MARK: - Configuration
 
     func configure(with viewModel: PokemonMoveCellViewModel) {
-        Task { @MainActor in
+        Task { [weak self] in
+            guard let self else { return }
+
             await viewModel.fetchDetails()
 
             updateUI(with: viewModel)

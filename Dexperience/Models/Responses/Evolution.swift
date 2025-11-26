@@ -5,7 +5,8 @@
 //  Created by Byron on 4/16/25.
 //
 
-struct Evolution: Hashable {
+nonisolated
+struct Evolution: Hashable, Sendable {
 
     let from: String?
     let to: String?

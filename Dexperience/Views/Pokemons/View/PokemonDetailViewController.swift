@@ -9,6 +9,7 @@ import UIKit
 
 final class PokemonDetailViewController<R: PokemonsRouter>: UIViewController, UICollectionViewDelegate,  UIScrollViewDelegate, HeaderDelegate {
 
+    nonisolated
     enum Section: Int, CaseIterable, Hashable {
         case stats
         case weaknesses
@@ -41,6 +42,7 @@ final class PokemonDetailViewController<R: PokemonsRouter>: UIViewController, UI
         }
     }
 
+    nonisolated
     enum Item: Hashable {
         case stat(StatDisplay)
         case weakness([TypeElement])

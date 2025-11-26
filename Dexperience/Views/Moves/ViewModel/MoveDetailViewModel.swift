@@ -40,7 +40,6 @@ final class MoveDetailViewModel<R: MovesRouter> {
 
     // MARK: - Data Fetching
 
-    @MainActor
     func fetchDetails() async throws {
         guard let movePath else { return }
 

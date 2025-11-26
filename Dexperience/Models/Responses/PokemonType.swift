@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum PokemonType: String, CaseIterable {
+enum PokemonType: String, CaseIterable, Sendable {
 
     case normal
     case fire

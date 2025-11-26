@@ -5,7 +5,8 @@
 //  Created by Byron on 4/7/25.
 //
 
-struct Other: Codable, Hashable {
+nonisolated
+struct Other: Codable, Hashable, Sendable {
 
     let officialArtwork: OfficialArtwork?
 

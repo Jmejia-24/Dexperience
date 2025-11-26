@@ -5,7 +5,8 @@
 //  Created by Byron on 4/7/25.
 //
 
-struct TypeElement: Codable, Hashable {
+nonisolated
+struct TypeElement: Codable, Hashable, Sendable {
     
     let slot: Int?
     let type: PokemonSummary?

@@ -5,7 +5,8 @@
 //  Created by Byron on 4/16/25.
 //
 
-struct LearnableMove: Hashable  {
+nonisolated
+struct LearnableMove: Hashable, Sendable {
 
     let move: PokemonSummary?
     let level: Int

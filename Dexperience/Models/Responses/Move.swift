@@ -5,7 +5,8 @@
 //  Created by Byron on 4/10/25.
 //
 
-struct Move: Codable, Hashable {
+nonisolated
+struct Move: Codable, Hashable, Sendable {
 
     let id: Int?
     let name: String?

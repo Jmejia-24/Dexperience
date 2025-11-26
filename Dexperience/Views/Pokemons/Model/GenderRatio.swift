@@ -5,7 +5,8 @@
 //  Created by Byron on 4/17/25.
 //
 
-struct GenderRatio: Hashable {
+nonisolated
+struct GenderRatio: Hashable, Sendable {
 
     let male: Double
     let female: Double

@@ -5,7 +5,8 @@
 //  Created by Byron on 4/17/25.
 //
 
-struct BreedingInfo: Hashable {
+nonisolated
+struct BreedingInfo: Hashable, Sendable {
 
     let eggGroups: [String]
     let hatchSteps: Int

@@ -5,7 +5,7 @@
 //  Created by Byron on 4/16/25.
 //
 
-struct VersionGroupDetail: Codable, Hashable {
+struct VersionGroupDetail: Codable, Hashable, Sendable {
 
     let levelLearnedAt: Int?
     let moveLearnMethod: PokemonSummary?

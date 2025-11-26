@@ -8,7 +8,7 @@
 import UIKit
 
 protocol GenericListHandler<Model>: AnyObject {
-    associatedtype Model: Hashable
+    associatedtype Model: Hashable & Sendable
 
     var title: String { get }
 

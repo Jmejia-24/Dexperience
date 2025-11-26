@@ -25,7 +25,6 @@ final class ItemsViewModel<R: ItemsRouter> {
         self.api = api
     }
 
-    @MainActor
     func getItemList() async throws {
         let response = try await api.fetchItemList(from: nil)
 
@@ -33,7 +32,6 @@ final class ItemsViewModel<R: ItemsRouter> {
         itemList = response.results
     }
 
-    @MainActor
     func fetchMoreItems() async throws {
         guard !isFetchingMore,
               let nextUrlString = itemListResponse?.next,

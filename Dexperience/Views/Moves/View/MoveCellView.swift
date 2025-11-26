@@ -41,7 +41,9 @@ final class MoveCellView: UICollectionViewCell {
     // MARK: - Configuration
 
     func configure(with viewModel: MoveCellViewModel) {
-        Task { @MainActor in
+        Task { [weak self] in
+            guard let self else { return }
+
             await viewModel.fetchDetails()
 
             updateUI(with: viewModel)

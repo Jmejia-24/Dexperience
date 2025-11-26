@@ -77,7 +77,9 @@ final class AbilityCell: UICollectionViewCell {
         indicatorImageView.isHidden = !viewModel.isHidden
         nameLabel.text = viewModel.name.formatted
 
-        Task { @MainActor in
+        Task { [weak self] in
+            guard let self else { return }
+
             let shortEffect = try? await viewModel.loadAbilityDescription()
 
             descriptionLabel.text = shortEffect

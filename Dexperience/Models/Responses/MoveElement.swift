@@ -5,7 +5,7 @@
 //  Created by Byron on 4/16/25.
 //
 
-struct MoveElement: Codable, Hashable {
+struct MoveElement: Codable, Hashable, Sendable {
 
     let move: PokemonSummary?
     let versionGroupDetails: [VersionGroupDetail]?

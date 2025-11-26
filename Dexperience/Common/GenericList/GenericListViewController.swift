@@ -9,6 +9,7 @@ import UIKit
 
 class GenericListViewController<Cell: UICollectionViewCell, Handler: GenericListHandler>: UIViewController, UICollectionViewDelegate, UISearchResultsUpdating, UICollectionViewDataSourcePrefetching where Handler.Model: Hashable {
 
+    nonisolated
     enum Section: CaseIterable {
         case main
     }

@@ -25,7 +25,6 @@ final class PokemonsViewModel<R: PokemonsRouter> {
         self.api = api
     }
 
-    @MainActor
     func getPokemonList() async throws {
         let response = try await api.fetchPokemonList(from: nil)
 
@@ -33,7 +32,6 @@ final class PokemonsViewModel<R: PokemonsRouter> {
         pokemonList = response.results
     }
 
-    @MainActor
     func fetchMorePokemon() async throws {
         guard !isFetchingMore,
               let nextUrlString = pokemonListResponse?.next,

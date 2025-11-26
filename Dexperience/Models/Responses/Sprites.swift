@@ -5,8 +5,9 @@
 //  Created by Byron on 4/7/25.
 //
 
-struct Sprites: Codable, Hashable {
-    
+nonisolated
+struct Sprites: Codable, Hashable, Sendable {
+
     let other: Other?
     let spriteDefault: String?
 

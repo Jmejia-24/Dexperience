@@ -20,7 +20,7 @@ actor SharedImageLoader {
         let task = Task<UIImage?, Never> {
             defer { Task { await self.clearTask(for: url) } }
 
-            if let cached = ImageCacheManager.shared.image(for: url) {
+            if let cached = await ImageCacheManager.shared.image(for: url) {
                 return cached
             }
 
@@ -28,7 +28,7 @@ actor SharedImageLoader {
                 let (data, _) = try await URLSession.shared.data(from: url)
                 guard let image = UIImage(data: data) else { return nil }
 
-                ImageCacheManager.shared.save(image: image, for: url)
+                await ImageCacheManager.shared.save(image: image, for: url)
                 return image
             } catch {
                 print("❌ SharedImageLoader error:", error.localizedDescription)

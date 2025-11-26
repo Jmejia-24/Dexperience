@@ -5,7 +5,8 @@
 //  Created by Byron on 4/6/25.
 //
 
-struct PokemonSummary: Codable, Hashable {
+nonisolated
+struct PokemonSummary: Codable, Hashable, Sendable {
 
     let name: String?
     let url: String?

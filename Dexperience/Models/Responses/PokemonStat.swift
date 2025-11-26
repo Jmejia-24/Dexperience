@@ -5,7 +5,7 @@
 //  Created by Byron on 4/16/25.
 //
 
-struct PokemonStat: Codable, Hashable {
+struct PokemonStat: Codable, Hashable, Sendable {
 
     let baseStat: Int?
     let stat: PokemonSummary?
