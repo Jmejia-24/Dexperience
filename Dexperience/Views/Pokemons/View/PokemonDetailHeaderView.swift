@@ -14,6 +14,7 @@ final class PokemonDetailHeaderView: UIView {
 
     weak var delegate: HeaderDelegate?
 
+    private let pokemonImageEffectViewFrameConstant: CGFloat = 190
     private let pokemonImageView: AsyncCachedImageView = {
         let imageView = AsyncCachedImageView()
 
@@ -74,6 +75,18 @@ final class PokemonDetailHeaderView: UIView {
         return stack
     }()
 
+    private lazy var pokemonImageEffectView: UIVisualEffectView = {
+        let glassEffect = UIGlassEffect()
+        let effectView = UIVisualEffectView(effect: glassEffect)
+
+        effectView.layer.cornerRadius = pokemonImageEffectViewFrameConstant / 2
+        effectView.clipsToBounds = true
+
+        effectView.translatesAutoresizingMaskIntoConstraints = false
+
+        return effectView
+    }()
+
     private let tabStackView: UIStackView = {
         let stack = UIStackView()
 
@@ -88,7 +101,7 @@ final class PokemonDetailHeaderView: UIView {
     }()
 
     var totalHeight: CGFloat {
-        pokemonImageView.frame.height + mainStackView.frame.height
+        pokemonImageEffectView.frame.height + mainStackView.frame.height
     }
 
     var pokemonImage: UIImage? {
@@ -153,17 +166,23 @@ final class PokemonDetailHeaderView: UIView {
 private extension PokemonDetailHeaderView {
 
     func layout() {
-        addSubview(pokemonImageView)
+        pokemonImageEffectView.contentView.addSubview(pokemonImageView)
+        addSubview(pokemonImageEffectView)
         addSubview(mainStackView)
         addSubview(tabStackView)
 
         NSLayoutConstraint.activate([
-            pokemonImageView.heightAnchor.constraint(equalToConstant: 170),
-            pokemonImageView.widthAnchor.constraint(equalToConstant: 170),
-            pokemonImageView.topAnchor.constraint(equalToSystemSpacingBelow: topAnchor, multiplier: 1),
-            pokemonImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            pokemonImageView.topAnchor.constraint(equalTo: pokemonImageEffectView.safeAreaLayoutGuide.topAnchor, constant: 16),
+            pokemonImageView.leadingAnchor.constraint(equalTo: pokemonImageEffectView.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            pokemonImageView.trailingAnchor.constraint(equalTo: pokemonImageEffectView.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            pokemonImageView.bottomAnchor.constraint(equalTo: pokemonImageEffectView.safeAreaLayoutGuide.bottomAnchor, constant: -16),
 
-            mainStackView.topAnchor.constraint(equalToSystemSpacingBelow: pokemonImageView.bottomAnchor, multiplier: 2),
+            pokemonImageEffectView.heightAnchor.constraint(equalToConstant: pokemonImageEffectViewFrameConstant),
+            pokemonImageEffectView.widthAnchor.constraint(equalToConstant: pokemonImageEffectViewFrameConstant),
+            pokemonImageEffectView.topAnchor.constraint(equalToSystemSpacingBelow: topAnchor, multiplier: 1),
+            pokemonImageEffectView.centerXAnchor.constraint(equalTo: centerXAnchor),
+
+            mainStackView.topAnchor.constraint(equalToSystemSpacingBelow: pokemonImageEffectView.bottomAnchor, multiplier: 2),
             mainStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             mainStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             mainStackView.bottomAnchor.constraint(equalTo: tabStackView.topAnchor, constant: -32),

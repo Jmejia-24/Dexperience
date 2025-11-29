@@ -78,10 +78,8 @@ private extension PokemonPreview {
         Task {
             do {
                 try await viewModel.loadData()
-                await MainActor.run {
-                    setupOffensiveMatrixView()
-                }
 
+                setupOffensiveMatrixView()
                 cardView.configure(with: viewModel.pokemon)
             } catch {
                 print("Error al cargar relaciones ofensivas: \(error)")

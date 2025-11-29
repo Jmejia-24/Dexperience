@@ -43,8 +43,6 @@ private extension PokemonCellView {
     // MARK: - Setup
 
     func setupView() {
-        contentView.backgroundColor = .systemBackground
-
         contentView.addSubview(cardView)
         cardView.translatesAutoresizingMaskIntoConstraints = false
 

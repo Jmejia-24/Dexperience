@@ -19,7 +19,7 @@ final class PokemonDetailCoordinator<R: PokemonsRouter> {
     }()
 
     lazy var primaryViewController: UIViewController = {
-        return PokemonDetailViewController(viewModel: pokemonDetailViewModel)
+        PokemonDetailViewController(viewModel: pokemonDetailViewModel)
     }()
 
     // MARK: - Initializers

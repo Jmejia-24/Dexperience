@@ -56,20 +56,29 @@ final class ItemDetailViewController<R: ItemsRouter>: UIViewController, UICollec
     }()
 
     private lazy var backButton: UIButton = {
-        let button = UIButton(type: .system)
+        var buttonConfiguration = UIButton.Configuration.glass()
+        let boldImage = UIImage(systemName: "chevron.down", withConfiguration: UIImage.SymbolConfiguration(weight: .bold))
 
-        button.setImage(UIImage(resource: .closeIcon), for: .normal)
-        button.tintColor = .white
+        buttonConfiguration.image = boldImage
+
+        let button = UIButton(configuration: buttonConfiguration)
+
         button.translatesAutoresizingMaskIntoConstraints = false
+
+        button.addAction(UIAction(handler: { [weak self] _ in
+            self?.dismiss(animated: true)
+        }), for: .touchUpInside)
 
         return button
     }()
 
     private lazy var shareButton: UIButton = {
-        let button = UIButton(type: .system)
+        var buttonConfiguration = UIButton.Configuration.glass()
+        let boldImage = UIImage(systemName: "square.and.arrow.up", withConfiguration: UIImage.SymbolConfiguration(weight: .bold))
 
-        button.setImage(UIImage(systemName: "square.and.arrow.up.circle.fill"), for: .normal)
-        button.tintColor = .white
+        buttonConfiguration.image = boldImage
+
+        let button = UIButton(configuration: buttonConfiguration)
 
         button.translatesAutoresizingMaskIntoConstraints = false
 
@@ -186,23 +195,19 @@ private extension ItemDetailViewController {
         view.addSubview(shareButton)
 
         NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            backButton.widthAnchor.constraint(equalToConstant: 24),
-            backButton.heightAnchor.constraint(equalToConstant: 24),
+            backButton.widthAnchor.constraint(equalToConstant: 35),
+            backButton.heightAnchor.constraint(equalToConstant: 35),
 
-            shareButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            shareButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             shareButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            shareButton.widthAnchor.constraint(equalToConstant: 24),
-            shareButton.heightAnchor.constraint(equalToConstant: 24),
+            shareButton.widthAnchor.constraint(equalToConstant: 35),
+            shareButton.heightAnchor.constraint(equalToConstant: 35),
 
-            navigationTitleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            navigationTitleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigationTitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
-
-        backButton.addAction(UIAction(handler: { [weak self] _ in
-            self?.dismiss(animated: true)
-        }), for: .touchUpInside)
     }
 
     func setupCollectionView() {

@@ -7,10 +7,15 @@
 
 import UIKit
 
-final class PokemonDetailViewController<R: PokemonsRouter>: UIViewController, UICollectionViewDelegate,  UIScrollViewDelegate, HeaderDelegate {
+final class PokemonDetailViewController<R: PokemonsRouter>:
+    UIViewController,
+    UICollectionViewDelegate,
+    UIScrollViewDelegate,
+    HeaderDelegate {
 
     nonisolated
     enum Section: Int, CaseIterable, Hashable {
+
         case stats
         case weaknesses
         case abilities
@@ -21,29 +26,30 @@ final class PokemonDetailViewController<R: PokemonsRouter>: UIViewController, UI
         case moves
 
         var title: String? {
-            switch self {
+            return switch self {
             case .weaknesses:
-                return "Weaknesses"
+                "Weaknesses"
             case .abilities:
-                return "Abilities"
+                "Abilities"
             case .breeding:
-                return "Breeding"
+                "Breeding"
             case .capture:
-                return "Capture"
+                "Capture"
             case .sprites:
-                return "Sprites"
+                "Sprites"
             default:
-                return nil
+                nil
             }
         }
 
         var shouldHaveHeader: Bool {
-            return title != nil
+            title != nil
         }
     }
 
     nonisolated
     enum Item: Hashable {
+
         case stat(StatDisplay)
         case weakness([TypeElement])
         case ability(AbilityEntry)
@@ -80,22 +86,23 @@ final class PokemonDetailViewController<R: PokemonsRouter>: UIViewController, UI
         return label
     }()
 
-    private lazy var containerView: UIView = {
-        let view = UIView()
+    private lazy var containerView: UIVisualEffectView = {
+        let containerEffect = UIGlassEffect()
+        let containerView = UIVisualEffectView(effect: containerEffect)
+        containerView.backgroundColor = .systemBackground
+        containerView.layer.cornerRadius = 48
+        containerView.translatesAutoresizingMaskIntoConstraints = false
 
-        view.backgroundColor = .systemBackground
-        view.layer.cornerRadius = 48
-
-        view.translatesAutoresizingMaskIntoConstraints = false
-
-        return view
+        return containerView
     }()
 
     private lazy var backButton: UIButton = {
-        let button = UIButton(type: .system)
+        var buttonConfiguration = UIButton.Configuration.glass()
+        let boldImage = UIImage(systemName: "chevron.down", withConfiguration: UIImage.SymbolConfiguration(weight: .bold))
 
-        button.setImage(UIImage(resource: .closeIcon), for: .normal)
-        button.tintColor = .white
+        buttonConfiguration.image = boldImage
+
+        let button = UIButton(configuration: buttonConfiguration)
 
         button.translatesAutoresizingMaskIntoConstraints = false
 
@@ -107,10 +114,12 @@ final class PokemonDetailViewController<R: PokemonsRouter>: UIViewController, UI
     }()
 
     private lazy var shareButton: UIButton = {
-        let button = UIButton(type: .system)
+        var buttonConfiguration = UIButton.Configuration.glass()
+        let boldImage = UIImage(systemName: "square.and.arrow.up", withConfiguration: UIImage.SymbolConfiguration(weight: .bold))
 
-        button.setImage(UIImage(systemName: "square.and.arrow.up.circle.fill"), for: .normal)
-        button.tintColor = .white
+        buttonConfiguration.image = boldImage
+
+        let button = UIButton(configuration: buttonConfiguration)
 
         button.translatesAutoresizingMaskIntoConstraints = false
 
@@ -122,9 +131,10 @@ final class PokemonDetailViewController<R: PokemonsRouter>: UIViewController, UI
     }()
 
     private lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
+        let layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, layoutEnvironment in
             var config = UICollectionLayoutListConfiguration(appearance: .plain)
-            if let section = self.dataSource.snapshot().sectionIdentifiers[safe: sectionIndex] {
+
+            if let section = self?.dataSource.snapshot().sectionIdentifiers[safe: sectionIndex] {
                 if section.shouldHaveHeader {
                     config.headerMode = .supplementary
                 }
@@ -196,24 +206,26 @@ final class PokemonDetailViewController<R: PokemonsRouter>: UIViewController, UI
     }
 
     private lazy var dataSource: DataSource = {
-        let dataSource = DataSource(collectionView: collectionView) { collectionView, indexPath, item -> UICollectionViewCell in
+        let dataSource = DataSource(collectionView: collectionView) { [weak self] collectionView, indexPath, item -> UICollectionViewCell in
+            guard let self else { return UICollectionViewCell() }
+
             switch item {
             case .move(let move):
-                return collectionView.dequeueConfiguredReusableCell(using: self.moveCellRegistration, for: indexPath, item: move)
+                return collectionView.dequeueConfiguredReusableCell(using: moveCellRegistration, for: indexPath, item: move)
             case .evolution(let evolution):
-                return collectionView.dequeueConfiguredReusableCell(using: self.evolutionCellRegistration, for: indexPath, item: evolution)
+                return collectionView.dequeueConfiguredReusableCell(using: evolutionCellRegistration, for: indexPath, item: evolution)
             case .stat(let statDisplay):
-                return collectionView.dequeueConfiguredReusableCell(using: self.statBarCellRegistration, for: indexPath, item: statDisplay)
+                return collectionView.dequeueConfiguredReusableCell(using: statBarCellRegistration, for: indexPath, item: statDisplay)
             case .weakness(let types):
-                return collectionView.dequeueConfiguredReusableCell(using: self.weaknessesCellRegistration, for: indexPath, item: types)
+                return collectionView.dequeueConfiguredReusableCell(using: weaknessesCellRegistration, for: indexPath, item: types)
             case .ability(let entry):
-                return collectionView.dequeueConfiguredReusableCell(using: self.abilityCellRegistration, for: indexPath, item: entry)
+                return collectionView.dequeueConfiguredReusableCell(using: abilityCellRegistration, for: indexPath, item: entry)
             case .breeding(let breeding):
-                return collectionView.dequeueConfiguredReusableCell(using: self.breedingCellRegistration, for: indexPath, item: breeding)
+                return collectionView.dequeueConfiguredReusableCell(using: breedingCellRegistration, for: indexPath, item: breeding)
             case .capture(let capture):
-                return collectionView.dequeueConfiguredReusableCell(using: self.captureCellRegistration, for: indexPath, item: capture)
+                return collectionView.dequeueConfiguredReusableCell(using: captureCellRegistration, for: indexPath, item: capture)
             case .sprite(let sprites):
-                return collectionView.dequeueConfiguredReusableCell(using: self.spritesCellRegistration, for: indexPath, item: sprites)
+                return collectionView.dequeueConfiguredReusableCell(using: spritesCellRegistration, for: indexPath, item: sprites)
             }
         }
 
@@ -301,17 +313,15 @@ private extension PokemonDetailViewController {
         view.addSubview(shareButton)
 
         NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            backButton.widthAnchor.constraint(equalToConstant: 24),
-            backButton.heightAnchor.constraint(equalToConstant: 24),
-
-            shareButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            backButton.widthAnchor.constraint(equalToConstant: 35),
+            backButton.heightAnchor.constraint(equalToConstant: 35),
+            shareButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             shareButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            shareButton.widthAnchor.constraint(equalToConstant: 24),
-            shareButton.heightAnchor.constraint(equalToConstant: 24),
-
-            navigationTitleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            shareButton.widthAnchor.constraint(equalToConstant: 35),
+            shareButton.heightAnchor.constraint(equalToConstant: 35),
+            navigationTitleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigationTitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
@@ -327,7 +337,7 @@ private extension PokemonDetailViewController {
         headerView.delegate = self
 
         view.addSubview(containerView)
-        containerView.addSubview(collectionView)
+        containerView.contentView.addSubview(collectionView)
         view.addSubview(headerView)
 
         headerView.translatesAutoresizingMaskIntoConstraints = false

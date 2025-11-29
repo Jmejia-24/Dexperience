@@ -24,7 +24,6 @@ final class SectionHeaderView: UICollectionReusableView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .systemBackground
 
         addSubview(titleLabel)
 
