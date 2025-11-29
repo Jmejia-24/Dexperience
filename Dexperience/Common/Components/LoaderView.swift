@@ -22,14 +22,14 @@ final class LoaderView: UIView {
         return view
     }()
 
-    private let containerView: UIView = {
-        let view = UIView()
+    private let containerView: UIVisualEffectView = {
+        let containerEffect = UIGlassEffect()
+        let containerView = UIVisualEffectView(effect: containerEffect)
 
-        view.backgroundColor = .systemBackground
-        view.layer.cornerRadius = 16
-        view.translatesAutoresizingMaskIntoConstraints = false
+        containerView.layer.cornerRadius = 16
+        containerView.translatesAutoresizingMaskIntoConstraints = false
 
-        return view
+        return containerView
     }()
 
     private let imageView: UIImageView = {
@@ -56,7 +56,7 @@ final class LoaderView: UIView {
 
         addSubview(backgroundView)
         addSubview(containerView)
-        containerView.addSubview(imageView)
+        containerView.contentView.addSubview(imageView)
 
         NSLayoutConstraint.activate([
             backgroundView.topAnchor.constraint(equalTo: topAnchor),
