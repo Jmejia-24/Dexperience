@@ -44,15 +44,14 @@ final class ItemDetailViewController<R: ItemsRouter>: UIViewController, UICollec
         return label
     }()
 
-    private lazy var containerView: UIView = {
-        let view = UIView()
+    private lazy var containerView: UIVisualEffectView = {
+        let containerEffect = UIGlassEffect()
+        let containerView = UIVisualEffectView(effect: containerEffect)
 
-        view.backgroundColor = .systemBackground
-        view.layer.cornerRadius = 48
+        containerView.layer.cornerRadius = 48
+        containerView.translatesAutoresizingMaskIntoConstraints = false
 
-        view.translatesAutoresizingMaskIntoConstraints = false
-
-        return view
+        return containerView
     }()
 
     private lazy var backButton: UIButton = {
@@ -100,7 +99,7 @@ final class ItemDetailViewController<R: ItemsRouter>: UIViewController, UICollec
         }
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .systemBackground
+
         collectionView.layer.cornerRadius = 48
         collectionView.delegate = self
 
@@ -185,7 +184,6 @@ final class ItemDetailViewController<R: ItemsRouter>: UIViewController, UICollec
 private extension ItemDetailViewController {
 
     func setupUI() {
-        view.backgroundColor = .systemBackground
         view.layer.insertSublayer(backgroundGradientLayer, at: 0)
     }
 
@@ -219,7 +217,7 @@ private extension ItemDetailViewController {
         )
 
         view.addSubview(containerView)
-        containerView.addSubview(collectionView)
+        containerView.contentView.addSubview(collectionView)
         view.addSubview(headerView)
 
         headerView.translatesAutoresizingMaskIntoConstraints = false

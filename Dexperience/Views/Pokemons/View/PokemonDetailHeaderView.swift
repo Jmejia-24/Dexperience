@@ -15,6 +15,7 @@ final class PokemonDetailHeaderView: UIView {
     weak var delegate: HeaderDelegate?
 
     private let pokemonImageEffectViewFrameConstant: CGFloat = 190
+
     private let pokemonImageView: AsyncCachedImageView = {
         let imageView = AsyncCachedImageView()
 
@@ -129,7 +130,7 @@ final class PokemonDetailHeaderView: UIView {
     }
 
     func setAlpha(_ value: CGFloat) {
-        pokemonImageView.alpha = value
+        pokemonImageEffectView.alpha = value
         mainStackView.alpha = value
     }
 

@@ -89,7 +89,7 @@ final class PokemonDetailViewController<R: PokemonsRouter>:
     private lazy var containerView: UIVisualEffectView = {
         let containerEffect = UIGlassEffect()
         let containerView = UIVisualEffectView(effect: containerEffect)
-        containerView.backgroundColor = .systemBackground
+
         containerView.layer.cornerRadius = 48
         containerView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -155,7 +155,6 @@ final class PokemonDetailViewController<R: PokemonsRouter>:
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
 
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.backgroundColor = .systemBackground
         collectionView.delegate = self
 
         collectionView.register(
@@ -262,7 +261,6 @@ final class PokemonDetailViewController<R: PokemonsRouter>:
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
         setupCollectionView()
         setupNavigation()
         fetchInitData()
@@ -302,10 +300,6 @@ final class PokemonDetailViewController<R: PokemonsRouter>:
 // MARK: - Setup
 
 private extension PokemonDetailViewController {
-
-    func setupUI() {
-        view.backgroundColor = .systemBackground
-    }
 
     func setupNavigation() {
         view.addSubview(navigationTitleLabel)
